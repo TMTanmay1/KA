@@ -283,32 +283,6 @@ const Course = () => {
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-  {filteredCourses
-    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-    .map((course) => (
-      <TableRow key={course.id}>
-        <TableCell align='center'>{course.COURSE_name}</TableCell>
-        <TableCell align='center'>
-          {course.COURSE_cat && course.COURSE_cat.COURSE_category 
-            ? course.COURSE_cat.COURSE_category 
-            : "No category"} {/* Safely handle null values */}
-        </TableCell>
-        <TableCell align='center'>{course.COURSE_fee}</TableCell>
-        <TableCell align="right">
-          <IconButton aria-label="edit">
-            <EditIcon />
-          </IconButton>
-          <IconButton aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
-          <IconButton aria-label="actions">
-            <MoreVertIcon />
-          </IconButton>
-        </TableCell>
-      </TableRow>
-    ))}
-</TableBody>
 <TableBody>
   {filteredCourses
     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -318,7 +292,7 @@ const Course = () => {
         <TableCell align='center'>
           {course.COURSE_cat && course.COURSE_cat.COURSE_category 
             ? course.COURSE_cat.COURSE_category 
-            : "No category"} {/* Safely handle null values */}
+            : "No category"} 
         </TableCell>
         <TableCell align='center'>{course.COURSE_fee}</TableCell>
         <TableCell align="right">
