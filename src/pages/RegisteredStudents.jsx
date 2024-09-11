@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
   Container,
   Grid,
@@ -24,6 +25,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AddFee from './AddFee';
 
 const RegisteredStudents = () => {
+  const Token = "3f17479bd1399b6b048d06a6eba63281f3a0aff5";
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(0);
@@ -31,11 +33,25 @@ const RegisteredStudents = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedStudent, setSelectedStudent] = useState(null);
 
-  const studentsData = [
-    { id: 1, name: 'John Doe', batch: 'Batch A', course: 'Math', fees: '$1000', date: '2024-09-01' },
-    { id: 2, name: 'Jane Smith', batch: 'Batch B', course: 'Science', fees: '$1200', date: '2024-09-02' },
-    // Add more sample data as needed
-  ];
+  const [studentsData, setStudentsData] = useState([]);
+
+  useEffect(() => {
+    const fetchRegisteredStudents = async () => {
+      try {
+        const response = await axios.get('https://crpch.in/api/ka/registered_student/',{
+          headers: {
+            Authorization: `Token ${Token}`,
+          },
+        });
+        setStudentsData(response.data.table_data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchRegisteredStudents();
+  }, []);
+
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -108,12 +124,12 @@ const RegisteredStudents = () => {
         <Table stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Batch</TableCell>
-              <TableCell>Course</TableCell>
-              <TableCell>Fees</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>Action</TableCell>
+              <TableCell align='center'>Name</TableCell>
+              <TableCell align='center'>Batch</TableCell>
+              <TableCell align='center'>Course</TableCell>
+              <TableCell align='center'>Pending Fees</TableCell>
+              <TableCell align='center'>Mobile No</TableCell>
+              <TableCell align='center'>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -121,12 +137,12 @@ const RegisteredStudents = () => {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((student) => (
                 <TableRow key={student.id}>
-                  <TableCell>{student.name}</TableCell>
-                  <TableCell>{student.batch}</TableCell>
-                  <TableCell>{student.course}</TableCell>
-                  <TableCell>{student.fees}</TableCell>
-                  <TableCell>{student.date}</TableCell>
-                  <TableCell>
+                  <TableCell align='center'>{student.name}</TableCell>
+                  <TableCell align='center'>{student.BATCH.BATCH_name}</TableCell>
+                  <TableCell align='center'>{student.COURSE.COURSE_name}</TableCell>
+                  <TableCell align='center'>{student.COURSE.COURSE_fee - student.total_paid_amount}</TableCell>
+                  <TableCell align='center'>{student.mobile_no}</TableCell>
+                  <TableCell align='center'>
                     <IconButton
                       onClick={(event) => handleMenuClick(event, student)}
                     >

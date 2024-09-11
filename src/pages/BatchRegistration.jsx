@@ -292,6 +292,8 @@ const BatchRegistration = () => {
   };
 
   const handleAddBatch = async(batch) => {
+    console.log(batch);
+    
     try {
       // Make API request to add a new batch
       const response = await axios.post(`https://crpch.in/api/ka/batch/`,

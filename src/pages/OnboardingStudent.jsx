@@ -119,7 +119,7 @@ function OnboardingStudent() {
           </Grid>
 
           {/* Select Batch */}
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
           <Typography variant="subtitle1" gutterBottom>
               Select Batch
             </Typography>
@@ -137,9 +137,40 @@ function OnboardingStudent() {
                     {batch.BATCH_name}
                   </MenuItem>
                 ))}
+
               </Select>
             </FormControl>
-          </Grid>
+          </Grid> */}
+
+<Grid item xs={12} sm={6}>
+  <Typography variant="subtitle1" gutterBottom>
+    Select Batch
+  </Typography>
+  {batches && batches.length > 0 ? (
+    <FormControl fullWidth required variant="outlined">
+      <InputLabel id="selectBatchLabel">Select Batch</InputLabel>
+      <Select
+        labelId="selectBatchLabel"
+        id="selectBatch"
+        label="Select Batch"
+        value={selectBatch}
+        onChange={(e) => setSelectBatch(e.target.value)}
+      >
+        {batches.map((batch) => (
+          <MenuItem key={batch.id} value={batch.id}>
+            {batch.BATCH_name}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  ) : (
+    <Typography variant="subtitle1" gutterBottom>
+      No batch for this course
+    </Typography>
+  )}
+</Grid>
+
+
 
           {/* Select Course */}
           <Grid item xs={12} sm={6}>
