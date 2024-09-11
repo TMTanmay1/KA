@@ -82,6 +82,7 @@ const Sidebar = () => {
             color: '#000',
             position: 'relative',
             zIndex: 2,
+            justifyContent: 'space-between',
           }}
         >
           <IconButton

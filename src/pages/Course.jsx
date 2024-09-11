@@ -92,7 +92,7 @@ const AddCourseModal = ({ open, onClose, onSubmit, categories }) => {
             >
               {categories.map((category) => (
                 <MenuItem key={category.id} value={category.id}>
-                  {category.COURSE_category}
+                  {category.COURSE_category}  
                 </MenuItem>
               ))}
             </Select>
@@ -284,27 +284,58 @@ const Course = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredCourses
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((course) => (
-                <TableRow key={course.id}>
-                  <TableCell align='center'>{course.COURSE_name}</TableCell>
-                  <TableCell align='center'>{course.COURSE_cat.COURSE_category}</TableCell>
-                  <TableCell align='center'>{course.COURSE_fee}</TableCell>
-                  <TableCell align="right">
-                    <IconButton aria-label="edit">
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton aria-label="delete">
-                      <DeleteIcon />
-                    </IconButton>
-                    <IconButton aria-label="actions">
-                      <MoreVertIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
+  {filteredCourses
+    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+    .map((course) => (
+      <TableRow key={course.id}>
+        <TableCell align='center'>{course.COURSE_name}</TableCell>
+        <TableCell align='center'>
+          {course.COURSE_cat && course.COURSE_cat.COURSE_category 
+            ? course.COURSE_cat.COURSE_category 
+            : "No category"} {/* Safely handle null values */}
+        </TableCell>
+        <TableCell align='center'>{course.COURSE_fee}</TableCell>
+        <TableCell align="right">
+          <IconButton aria-label="edit">
+            <EditIcon />
+          </IconButton>
+          <IconButton aria-label="delete">
+            <DeleteIcon />
+          </IconButton>
+          <IconButton aria-label="actions">
+            <MoreVertIcon />
+          </IconButton>
+        </TableCell>
+      </TableRow>
+    ))}
+</TableBody>
+<TableBody>
+  {filteredCourses
+    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+    .map((course) => (
+      <TableRow key={course.id}>
+        <TableCell align='center'>{course.COURSE_name}</TableCell>
+        <TableCell align='center'>
+          {course.COURSE_cat && course.COURSE_cat.COURSE_category 
+            ? course.COURSE_cat.COURSE_category 
+            : "No category"} {/* Safely handle null values */}
+        </TableCell>
+        <TableCell align='center'>{course.COURSE_fee}</TableCell>
+        <TableCell align="right">
+          <IconButton aria-label="edit">
+            <EditIcon />
+          </IconButton>
+          <IconButton aria-label="delete">
+            <DeleteIcon />
+          </IconButton>
+          <IconButton aria-label="actions">
+            <MoreVertIcon />
+          </IconButton>
+        </TableCell>
+      </TableRow>
+    ))}
+</TableBody>
+
         </Table>
       </TableContainer>
       <TablePagination
