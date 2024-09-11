@@ -3,7 +3,7 @@ import { Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton, Box, To
 import { Link } from 'react-router-dom';
 import { Home, Person, School, Menu, Book, ExpandMore, ExpandLess, Add, ListAlt, InsertDriveFile, Category,  AccountBalance, Money } from '@mui/icons-material';
 import L from '../assets/L.jpeg';
-
+import Logo from '../assets/ka1.png';
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
   const [batchManagementOpen, setBatchManagementOpen] = useState(false);
@@ -94,7 +94,7 @@ const Sidebar = () => {
             <Menu />
           </IconButton>
           <img
-            src={L}
+            src={Logo}
             alt="Logo"
             style={{ height: '40px' }}
           />
