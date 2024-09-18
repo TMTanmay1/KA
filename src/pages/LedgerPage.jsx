@@ -70,24 +70,38 @@ const LedgerPage = () => {
         {ledger.length > 0 ? (
             ledger.map((entry) => (
               <Grid item xs={12} md={4} key={entry.id}>
-                <Card elevation={2} sx={{ borderRadius: '12px', backgroundColor: '#ffffff' }}>
-                  <CardContent>
-                    <Typography variant="body2" color="textSecondary">Transaction Date</Typography>
-                    <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: '10px' }}>
-                      {new Date(entry.payment_date).toLocaleDateString()}
-                    </Typography>
+                <Card
+  elevation={2}
+  sx={{
+    borderRadius: '12px',
+    background: 'linear-gradient(135deg, #f2994a, #f2c94c)', // Orange to yellow gradient
+    color: '#ffffff', // White text for better contrast
+  }}
+>
+  <CardContent>
+    <Typography variant="body2" sx={{ opacity: 0.8 }}>
+      Transaction Date
+    </Typography>
+    <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: '10px' }}>
+      {new Date(entry.payment_date).toLocaleDateString()}
+    </Typography>
 
-                    <Typography variant="body2" color="textSecondary">Amount</Typography>
-                    <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: '10px' }}>
-                    ₹{entry.payment_amount}
-                    </Typography>
+    <Typography variant="body2" sx={{ opacity: 0.8 }}>
+      Amount
+    </Typography>
+    <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: '10px' }}>
+      ₹{entry.payment_amount}
+    </Typography>
 
-                    <Typography variant="body2" color="textSecondary">Due Amount</Typography>
-                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                    ₹{entry.due_amount}
-                    </Typography>
-                  </CardContent>
-                </Card>
+    <Typography variant="body2" sx={{ opacity: 0.8 }}>
+      Due Amount
+    </Typography>
+    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+      ₹{entry.due_amount}
+    </Typography>
+  </CardContent>
+</Card>
+
               </Grid>
             ))
           ) : (
