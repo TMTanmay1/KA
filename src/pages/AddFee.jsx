@@ -26,7 +26,7 @@ function AddFee() {
   }, [studentData]);
 
   const handleAddFee = async () => {
-    console.log(studentData.id, monthlyFeeAmount, ofMonth);
+    console.log(studentData.id, monthlyFeeAmount);
     
     try {
       const response = await axios.put(`https://crpch.in/api/ka/monthly-fee-update/?id=${studentData.id}`, {
