@@ -79,24 +79,24 @@ const LedgerPage = () => {
   }}
 >
   <CardContent>
-    <Typography variant="body2" sx={{ opacity: 0.8 }}>
+    <Typography variant="body2" sx={{ opacity: 1 }}>
       Transaction Date
     </Typography>
-    <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: '10px' }}>
+    <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: '10px', color:"black" }}>
       {new Date(entry.payment_date).toLocaleDateString()}
     </Typography>
 
-    <Typography variant="body2" sx={{ opacity: 0.8 }}>
+    <Typography variant="body2" sx={{ opacity: 1 }}>
       Amount
     </Typography>
-    <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: '10px' }}>
+    <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: '10px', color:"black" }}>
       ₹{entry.payment_amount}
     </Typography>
 
-    <Typography variant="body2" sx={{ opacity: 0.8 }}>
+    <Typography variant="body2" sx={{ opacity: 1 }}>
       Due Amount
     </Typography>
-    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+    <Typography variant="h6" sx={{ fontWeight: 'bold', color:"black" }}>
       ₹{entry.due_amount}
     </Typography>
   </CardContent>
