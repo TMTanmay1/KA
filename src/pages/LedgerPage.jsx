@@ -41,7 +41,7 @@ const LedgerPage = () => {
       {/* Top Section with Student Image and Details */}
       <Paper elevation={4} sx={{ padding: '20px', borderRadius: '12px', marginBottom: '30px', display: 'flex', alignItems: 'center', backgroundColor: '#f0f4f8' }}>
         <Avatar
-          src={student.image}
+          src={`https://crpch.in${student.student_photo}`}
           alt={student.name}
           sx={{ width: 100, height: 100, marginRight: '20px', border: '2px solid #3f51b5' }}
         />

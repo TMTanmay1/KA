@@ -57,8 +57,8 @@ const ViewProfile = () => {
         <Box sx={{ display: "flex", justifyContent: "center", mb: 3 }}>
           {/* Profile Photo */}
           <Avatar
-            alt={name}
-            src={student_photo || "https://via.placeholder.com/150"}
+            // alt={name}
+            src={`https://crpch.in${student_photo}`}
             sx={{
               width: 150,
               height: 150,
@@ -97,7 +97,7 @@ const ViewProfile = () => {
               <Typography variant="body1" sx={{ mt: 1 }}>
                 <strong>Gender:</strong> {gender}
               </Typography>
-              
+
             </CardContent>
           </Grid>
 
