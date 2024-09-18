@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Grid, Typography, Box, Dialog, DialogActions, DialogContent, Slide, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { TextField, Button, Grid, Typography, Box, Dialog, DialogActions, DialogContent, Slide, MenuItem, Select, FormControl, InputLabel ,Snackbar,
+  Alert,} from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import Lottie from 'lottie-react';
 import cnf from '../assets/cnf.json';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -12,7 +14,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 function OnboardingStudent() {
   const location = useLocation();
   const studentData = location.state?.student;
-
+  const navigate = useNavigate();
   const [studentName, setStudentName] = useState('');
   const [selectBatch, setSelectBatch] = useState('');
   const [selectCourse, setSelectCourse] = useState('');
@@ -22,7 +24,12 @@ function OnboardingStudent() {
   const [batches, setBatches] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
 
-  const Token = "3f17479bd1399b6b048d06a6eba63281f3a0aff5";
+  const Token = localStorage.getItem('authToken');
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+
 
   useEffect(() => {
     if (studentData?.COURSE?.id) {
@@ -86,10 +93,17 @@ function OnboardingStudent() {
           'Content-Type': 'application/json',
         },
       });
-      alert('Student data updated successfully');
+      
+      setSnackbarMessage('Student onboarded successfully');
+      setSnackbarSeverity('success');
+      navigate('/dashboard/registered-students'); 
+      
     } catch (error) {
       console.error('Error updating student data:', error);
-      alert('Failed to update student data');
+      setSnackbarMessage('Student Onboarding Failed');
+      setSnackbarSeverity('error');
+    }finally {
+      setSnackbarOpen(true);
     }
   };
 
@@ -274,6 +288,16 @@ function OnboardingStudent() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

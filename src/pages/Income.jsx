@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
+import axios from 'axios';
 import {
   Container,
   Grid,
@@ -21,16 +22,51 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 
 const Income = () => {
+  const Token = localStorage.getItem('authToken');
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   // Sample data for the table
-  const [incomeData, setIncomeData] = useState([
-    { id: 1, studentName: 'John Doe', date: '2024-09-01', amount: 500, batch: 'A1', dueAmount: 100, courseFees: 600 },
-    { id: 2, studentName: 'Jane Smith', date: '2024-09-02', amount: 700, batch: 'B1', dueAmount: 200, courseFees: 900 },
-    // Add more sample data as needed
-  ]);
+  const [incomeData, setIncomeData] = useState([]);
+  const [total_income , setTotalIncome] = useState('');
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await axios.get(`https://crpch.in/api/ka/dashboard_counter/`, {
+          headers: {
+            Authorization: `Token ${Token}`,
+          },
+        });
+        setTotalIncome(response.data.income);
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      }
+    };
+
+    fetchDashboardData();
+  },[])
+
+  useEffect(() => {
+    const fetchIncomeData = async () => {
+      try {
+        const response = await axios.get('https://crpch.in/api/ka/income/', {
+          headers: {
+            Authorization: `Token ${Token}`,
+          },
+        });
+        setIncomeData(response.data.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchIncomeData();
+  } , []);
+
+  console.log(incomeData);
+  
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -46,7 +82,7 @@ const Income = () => {
   };
 
   const filteredIncomeData = incomeData.filter((income) =>
-    income.studentName.toLowerCase().includes(searchTerm.toLowerCase())
+    income.student.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const totalIncome = incomeData.reduce((sum, income) => sum + income.amount, 0);
@@ -85,7 +121,7 @@ const Income = () => {
                 Total Income =
               </Typography>
               <Typography variant="h4" component="div" sx={{ ml: 2 }}>
-                ₹{totalIncome}
+                ₹{total_income}
               </Typography>
             </Button>
           </Grid>
@@ -93,11 +129,11 @@ const Income = () => {
       </Box>
 
       <TextField
-        fullWidth
         variant="outlined"
-        placeholder="Search by Student Name"
+        label="Search by Student Name"
         value={searchTerm}
         onChange={handleSearch}
+        fullWidth={!(window.innerWidth > 600)}
         sx={{ mb: 2 }}
         InputProps={{
           startAdornment: (
@@ -112,27 +148,36 @@ const Income = () => {
         <Table stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell>Student Name</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>Amount</TableCell>
-              <TableCell>Batch</TableCell>
-              <TableCell>Due Amount</TableCell>
-              <TableCell>Course Fees</TableCell>
+              <TableCell align='center'>Student Name</TableCell>
+              <TableCell align='center'>Date</TableCell>
+              <TableCell align='center'>Paid Amount</TableCell>
+              <TableCell align='center'>Batch</TableCell>
+              <TableCell align='center'>Due Amount</TableCell>
+              <TableCell align='center'>Course Fees</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredIncomeData
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((income) => (
-                <TableRow key={income.id}>
-                  <TableCell>{income.studentName}</TableCell>
-                  <TableCell>{income.date}</TableCell>
-                  <TableCell>{income.amount}</TableCell>
-                  <TableCell>{income.batch}</TableCell>
-                  <TableCell>{income.dueAmount}</TableCell>
-                  <TableCell>{income.courseFees}</TableCell>
-                </TableRow>
-              ))}
+            {filteredIncomeData.length > 0 ? (
+              filteredIncomeData
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((income, index) => (
+                  <TableRow key={income.id}>
+                    <TableCell align='center'>{income.student.name}</TableCell>
+                    <TableCell align='center'>{income.date}</TableCell>
+                    <TableCell align='center'>₹{income.payment_amount}</TableCell>
+                    <TableCell align='center'>{income.student.BATCH.BATCH_name}</TableCell>
+                    <TableCell align='center'>₹{income.due_amount}</TableCell>
+                    <TableCell align='center'>₹{income.student.COURSE.COURSE_fee}</TableCell>
+                  </TableRow>
+                ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={6} align='center'>
+                  No income data found
+                </TableCell>
+              </TableRow>
+            )}
+            
           </TableBody>
         </Table>
       </TableContainer>

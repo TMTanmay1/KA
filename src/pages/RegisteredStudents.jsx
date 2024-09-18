@@ -18,6 +18,8 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom'; 
 import SearchIcon from '@mui/icons-material/Search';
@@ -25,7 +27,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AddFee from './AddFee';
 
 const RegisteredStudents = () => {
-  const Token = "3f17479bd1399b6b048d06a6eba63281f3a0aff5";
+  const Token = localStorage.getItem('authToken');
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(0);
@@ -34,6 +36,10 @@ const RegisteredStudents = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
 
   const [studentsData, setStudentsData] = useState([]);
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
   useEffect(() => {
     const fetchRegisteredStudents = async () => {
@@ -77,8 +83,39 @@ const RegisteredStudents = () => {
   };
 
   const handleAddFee = () => {
-    navigate('/add-fee');
+    navigate('/dashboard/add-fee' , { state: { student: selectedStudent } });
     handleMenuClose();
+  };
+
+  const handleViewLedger = () => {
+    navigate('/dashboard/view-ledger' , { state: { student: selectedStudent } });
+    handleMenuClose();
+  };
+
+  const handleViewProfile = () => {
+    navigate('/dashboard/view-profile' , { state: { student: selectedStudent } }); // Navigate to ViewStudent page
+    handleMenuClose();
+  };
+
+  const handleDeleteRegistration = async (id) => {
+    try {
+      const response = await axios.delete(`https://crpch.in/api/ka/registered_student/?student_id=${id}`, {
+        headers: {
+          Authorization: `Token ${Token}`,
+        },
+      });
+
+      
+      setSnackbarMessage('Student registration deleted successfully');
+      setSnackbarSeverity('success');
+
+    } catch (error) {   
+      console.error('Error deleting student registration:', error);
+      setSnackbarMessage('Failed to delete student registration');
+      setSnackbarSeverity('error');
+    } finally {
+      setSnackbarOpen(true);
+    }
   };
 
   const filteredStudentsData = studentsData.filter((student) =>
@@ -153,10 +190,15 @@ const RegisteredStudents = () => {
                       open={Boolean(anchorEl) && selectedStudent?.id === student.id}
                       onClose={handleMenuClose}
                     >
-                      <MenuItem onClick={handleMenuClose}>View</MenuItem>
+                      <MenuItem onClick={handleViewProfile}>View</MenuItem>
                       <MenuItem onClick={handleAddFee}>Add Fee</MenuItem>
-                      <MenuItem onClick={handleMenuClose}>View Ledger</MenuItem>
-                      <MenuItem onClick={handleMenuClose}>Delete</MenuItem>
+                      <MenuItem onClick={handleViewLedger}>View Ledger</MenuItem>
+                      <MenuItem onClick={handleMenuClose}>Mark Dropout</MenuItem>
+                      <MenuItem  onClick={() => {
+    handleDeleteRegistration(student.id); // Call delete when clicked
+    handleMenuClose(); // Close the menu after the action
+  }}>Delete</MenuItem>
+                      
                     </Menu>
                   </TableCell>
                 </TableRow>
@@ -174,6 +216,16 @@ const RegisteredStudents = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

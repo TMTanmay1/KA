@@ -18,13 +18,15 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useNavigate } from 'react-router-dom'; 
 
 const AppliedStudent = () => {
-  const Token = "3f17479bd1399b6b048d06a6eba63281f3a0aff5";
+  const Token = localStorage.getItem('authToken');
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(0);
@@ -33,6 +35,10 @@ const AppliedStudent = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
 
   const [studentsData, setStudentsData] = useState([]);
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
   useEffect(() => {
     const fetchAppliedStudents = async () => {
@@ -77,7 +83,12 @@ const AppliedStudent = () => {
   };
 
   const handleOnboardClick = () => {
-    navigate('/onboarding-student' , { state: { student: selectedStudent } }); // Navigate to OnboardingStudent page
+    navigate('/dashboard/onboarding-student' , { state: { student: selectedStudent } }); // Navigate to OnboardingStudent page
+    handleMenuClose();
+  };
+
+  const handleViewProfile = () => {
+    navigate('/dashboard/view-profile' , { state: { student: selectedStudent } }); // Navigate to ViewStudent page
     handleMenuClose();
   };
 
@@ -85,6 +96,26 @@ const AppliedStudent = () => {
     student.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleDeleteApplied = async(id) =>{
+    try{
+      const response = await axios.delete(`https://crpch.in/api/ka/student/?student_id=${id}`, {
+        headers: {
+          Authorization: `Token ${Token}`,
+        },
+      });
+
+      
+      setSnackbarMessage('Student registration deleted successfully');
+      setSnackbarSeverity('success');
+    } catch {
+      console.error('Error deleting student registration:', error);
+      setSnackbarMessage('Failed to delete student registration');
+      setSnackbarSeverity('error');
+    } finally {
+      setSnackbarOpen(true);
+    }
+
+  }
   return (
     <Container maxWidth="lg">
       <Box my={4}>
@@ -153,9 +184,12 @@ const AppliedStudent = () => {
                       open={Boolean(anchorEl) && selectedStudent?.id === student.id}
                       onClose={handleMenuClose}
                     >
-                      <MenuItem onClick={handleMenuClose}>View</MenuItem>
+                      <MenuItem onClick={handleViewProfile}>View</MenuItem>
                       <MenuItem onClick={handleOnboardClick}>Onboard</MenuItem>
-                      <MenuItem onClick={handleMenuClose}>Delete</MenuItem>
+                      <MenuItem onClick={()=>{
+                        handleDeleteApplied(student.id);
+                        handleMenuClose();
+                      }}>Delete</MenuItem>
                     </Menu>
                   </TableCell>
                 </TableRow>

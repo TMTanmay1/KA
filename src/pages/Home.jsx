@@ -21,15 +21,23 @@ const cardStyles = [
   {
     backgroundColor: '#43a047', // Green
     color: '#fff',
-  }
+  },
 ];
 
 const Home = () => {
-  const Token = "3f17479bd1399b6b048d06a6eba63281f3a0aff5";
+  const Token = localStorage.getItem('authToken');
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sampleData, setSampleData] = useState([]);
+  const [dashboardData, setDashboardData] = useState({
+    total_student: 0,
+    passout_student: 0,
+    drop_out: 0,
+    active_student: 0,
+    income: 0,
+  });
+
 
   useEffect(() => {
     // Fetch batches from the API
@@ -47,6 +55,21 @@ const Home = () => {
     };
 
     fetchBatches();
+
+    const fetchDashboardData = async () => {
+      try {
+        const response = await axios.get(`https://crpch.in/api/ka/dashboard_counter/`, {
+          headers: {
+            Authorization: `Token ${Token}`,
+          },
+        });
+        setDashboardData(response.data);
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      }
+    };
+
+    fetchDashboardData();
   }, []);
 
 
@@ -71,39 +94,112 @@ const Home = () => {
         <Typography variant="h4" gutterBottom>
           Dashboard
         </Typography>
-        <Grid container spacing={2}>
-          {/* Cards */}
-          {cardStyles.map((style, index) => (
-            <Grid item xs={12} sm={6} md={3} key={index}>
-              <Card
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  backgroundColor: style.backgroundColor,
-                  color: style.color,
-                  backdropFilter: 'blur(10px)',
-                  borderRadius: 2,
-                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                  p: 2,
-                  '&:hover': {
-                    transform: 'scale(1.05)',
-                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
-                  },
-                }}
-              >
-                <CardContent sx={{ textAlign: 'center', px: 2, py: 3 }}>
-                  <Typography variant="h4" component="div">
-                    {index === 0 ? '150' : index === 1 ? '50' : index === 2 ? '₹25,000' : '100'}
-                  </Typography>
-                  <Typography variant="body1" sx={{ mt: 1 }}>
-                    {index === 0 ? 'Total Students' : index === 1 ? 'Total Passout Students' : index === 2 ? 'Total Income' : 'Current Students'}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
+
+<Grid container spacing={2}>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                backgroundColor: cardStyles[0].backgroundColor,
+                color: cardStyles[0].color,
+                backdropFilter: 'blur(10px)',
+                borderRadius: 2,
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                p: 2,
+                '&:hover': {
+                  transform: 'scale(1.05)',
+                  boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
+                },
+              }}
+            >
+              <CardContent sx={{ textAlign: 'center', px: 2, py: 3 }}>
+                <Typography variant="h4">{dashboardData.total_student}</Typography>
+                <Typography variant="body1" sx={{ mt: 1 }}>Total Students</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Card
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                backgroundColor: cardStyles[1].backgroundColor,
+                color: cardStyles[1].color,
+                backdropFilter: 'blur(10px)',
+                borderRadius: 2,
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                p: 2,
+                '&:hover': {
+                  transform: 'scale(1.05)',
+                  boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
+                },
+              }}
+            >
+              <CardContent sx={{ textAlign: 'center', px: 2, py: 3 }}>
+                <Typography variant="h4">{dashboardData.active_student}</Typography>
+                <Typography variant="body1" sx={{ mt: 1 }}>Current Students</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Card
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                backgroundColor: cardStyles[2].backgroundColor,
+                color: cardStyles[2].color,
+                backdropFilter: 'blur(10px)',
+                borderRadius: 2,
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                p: 2,
+                '&:hover': {
+                  transform: 'scale(1.05)',
+                  boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
+                },
+              }}
+            >
+              <CardContent sx={{ textAlign: 'center', px: 2, py: 3 }}>
+                <Typography variant="h4">₹{dashboardData.income}</Typography>
+                <Typography variant="body1" sx={{ mt: 1 }}>Total Income</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Card
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                backgroundColor: cardStyles[3].backgroundColor,
+                color: cardStyles[3].color,
+                backdropFilter: 'blur(10px)',
+                borderRadius: 2,
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                p: 2,
+                '&:hover': {
+                  transform: 'scale(1.05)',
+                  boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
+                },
+              }}
+            >
+              <CardContent sx={{ textAlign: 'center', px: 2, py: 3 }}>
+                <Typography variant="h6">Passout: {dashboardData.passout_student}</Typography>
+                <hr></hr>
+                <Typography variant="h6" sx={{ mt: 1 }}>Dropout: {dashboardData.drop_out}</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
 
         {/* Table with Search Bar */}
@@ -141,28 +237,26 @@ const Home = () => {
     </TableRow>
   </TableHead>
   <TableBody>
-    {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-      <TableRow
-        key={row.id}
-        sx={{
-          '&:nth-of-type(even)': {
-            backgroundColor: '#f9f9f9',
-          },
-          '&:hover': {
-            backgroundColor: '#e0f7fa',
-          },
-        }}
-      >
-        <TableCell sx={{ textAlign: 'center' }}>
-          {sampleData.indexOf(row) + 1}
+    {filteredData.length > 0 ? (
+      filteredData
+        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+        .map((row, index) => (
+          <TableRow key={row.id}>
+            <TableCell align='center'>{index + 1}</TableCell>
+            <TableCell align='center'>{row.BATCH_name}</TableCell>
+            <TableCell align='center'>{row.COURSE.COURSE_name}</TableCell>
+            <TableCell align='center'>{row.start_date}</TableCell>
+            <TableCell align='center'>{row.end_date}</TableCell>
+            <TableCell align='center'>{row.COURSE.COURSE_cat.COURSE_category}</TableCell>
+          </TableRow>
+        ))
+    ) : (
+      <TableRow>
+        <TableCell colSpan={6} align='center'>
+          No data found
         </TableCell>
-        <TableCell sx={{ textAlign: 'center' }}>{row.BATCH_name}</TableCell>
-        <TableCell sx={{ textAlign: 'center' }}>{row.COURSE.COURSE_name}</TableCell>
-        <TableCell sx={{ textAlign: 'center' }}>{row.start_date}</TableCell>
-        <TableCell sx={{ textAlign: 'center' }}>{row.end_date}</TableCell>
-        <TableCell sx={{ textAlign: 'center' }}>{row.COURSE.COURSE_cat.COURSE_category}</TableCell>
       </TableRow>
-    ))}
+    )}
   </TableBody>
 </Table>
 

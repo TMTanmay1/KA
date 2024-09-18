@@ -92,7 +92,7 @@ const AddCourseCategoryModal = ({ open, onClose, onSubmit }) => {
 };
 
 const CourseCategory = () => {
-  const Token = "3f17479bd1399b6b048d06a6eba63281f3a0aff5";
+  const Token = localStorage.getItem('authToken');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState('');
@@ -178,6 +178,30 @@ const CourseCategory = () => {
 
     fetchCourseCategories();
   }, [snackbarOpen]);
+
+  const handleDeleteCategory = async (categoryId) => {
+    try {
+      const response = await axios.delete(`https://crpch.in/api/ka/course/category/?id=${categoryId}`, {
+        headers: {
+          Authorization: `Token ${Token}`,
+        },
+      });
+
+      setSnackbarMessage('Category deleted successfully!');
+      setSnackbarSeverity('success');
+
+      const updatedCategories = courseCategories.filter(
+        (category) => category.id !== categoryId
+      );
+      setCourseCategories(updatedCategories);
+    } catch (error) {
+      console.error('Error deleting course category:', error);
+      setSnackbarMessage('Failed to delete category.');
+      setSnackbarSeverity('error');
+    } finally {
+      setSnackbarOpen(true);
+    }
+  };
   
   const filteredCategories = courseCategories.filter((category) =>
     category.COURSE_category?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -236,25 +260,34 @@ const CourseCategory = () => {
           <TableHead>
             <TableRow>
               <TableCell align='center'>Category Name</TableCell>
-              <TableCell align="right">Actions</TableCell>
+              <TableCell align="center">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredCategories
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((category) => (
-                <TableRow key={category.id}>
-                  <TableCell align='center'>{category.COURSE_category}</TableCell>
-                  <TableCell align="right">
-                    <IconButton aria-label="edit">
-                      <EditIcon />
-                    </IconButton> 
-                    <IconButton aria-label="delete">
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
+            {filteredCategories.length > 0 ? (
+              filteredCategories
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((category) => (
+                  <TableRow key={category.id}>
+                    <TableCell align='center'>{category.COURSE_category}</TableCell>
+                    <TableCell align='center'>
+                      <IconButton>
+                        <EditIcon color="primary" />
+                      </IconButton>
+                      <IconButton onClick={() => handleDeleteCategory(category.id)}>
+                        <DeleteIcon color="secondary" />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={2} align='center'>
+                  No course categories found.
+                </TableCell>
+              </TableRow>
+            )}
+            
           </TableBody>
         </Table>
       </TableContainer>

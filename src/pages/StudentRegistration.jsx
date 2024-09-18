@@ -20,7 +20,7 @@ import L from '../assets/sr.webp';
 import { useNavigate } from 'react-router-dom';
 
 const StudentRegistration = () => {
-  const Token = "3f17479bd1399b6b048d06a6eba63281f3a0aff5";
+  const Token = localStorage.getItem('authToken');
   const [photo, setPhoto] = useState(null);
   const [document, setDocument] = useState(null);
   const [documentName, setDocumentName] = useState('');
@@ -172,7 +172,7 @@ const StudentRegistration = () => {
       setSnackbarMessage('Student registered successfully!');
       setSnackbarSeverity('success');
 
-      navigate('/applied-student');
+      navigate('/dashboard/applied-student');
 
     } catch (error) {
       console.error('Error registering student:', error);

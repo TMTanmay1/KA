@@ -1,9 +1,20 @@
 import React from 'react';
 import { Box, Toolbar, Typography } from '@mui/material';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
+import { Button } from 'antd';
+import Cookies from 'js-cookie';
+
 
 const AppLayout = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    Cookies.remove('LoggedIn');
+    navigate('/');
+  }
+  
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
       <Sidebar />
@@ -27,6 +38,12 @@ const AppLayout = () => {
           }}
         >
           <Typography variant="h6">Krishna Academy</Typography>
+
+          <Button type="primary" style={{ marginLeft: 'auto', backgroundColor:'red' }}
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
           {/* You can add more elements here if needed */}
         </Box>
         <Box

@@ -105,7 +105,7 @@ const Sidebar = () => {
         <List>
           <ListItem
             button
-            component={Link} to="/"
+            component={Link} to="/dashboard"
             sx={{
               my: 1.5,
               borderRadius: '8px',
@@ -146,7 +146,7 @@ const Sidebar = () => {
               <ListItem
                 button
                 component={Link}
-                to="/batch-registration"
+                to="/dashboard/batch-registration"
                 sx={{
                   pl: 4,
                   backgroundColor: 'white',
@@ -207,30 +207,11 @@ const Sidebar = () => {
           </ListItem>
           <Collapse in={studentManagementOpen} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItem
+
+            <ListItem
                 button
                 component={Link}
-                to="/applied-student"
-                sx={{
-                  pl: 4,
-                  backgroundColor: 'white',
-                  borderRadius: '8px',
-                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                  my: 0.5,
-                  '&:hover': {
-                    backgroundColor: '#f5f5f5',
-                  },
-                }}
-              >
-                <ListItemIcon>
-                  <ListAlt />
-                </ListItemIcon>
-                <ListItemText primary="Applied Student" />
-              </ListItem>
-              <ListItem
-                button
-                component={Link}
-                to="/student-registration"
+                to="/dashboard/student-registration"
                 sx={{
                   pl: 4,
                   backgroundColor: 'white',
@@ -247,10 +228,32 @@ const Sidebar = () => {
                 </ListItemIcon>
                 <ListItemText primary="Student Registration" />
               </ListItem>
+              
               <ListItem
                 button
                 component={Link}
-                to="/registered-students"
+                to="/dashboard/applied-student"
+                sx={{
+                  pl: 4,
+                  backgroundColor: 'white',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                  my: 0.5,
+                  '&:hover': {
+                    backgroundColor: '#f5f5f5',
+                  },
+                }}
+              >
+                <ListItemIcon>
+                  <ListAlt />
+                </ListItemIcon>
+                <ListItemText primary="Applied Student" />
+              </ListItem>
+              
+              <ListItem
+                button
+                component={Link}
+                to="/dashboard/registered-students"
                 sx={{
                   pl: 4,
                   backgroundColor: 'white',
@@ -294,7 +297,7 @@ const Sidebar = () => {
               <ListItem
                 button
                 component={Link}
-                to="/course"
+                to="/dashboard/course"
                 sx={{
                   pl: 4,
                   backgroundColor: 'white',
@@ -314,7 +317,7 @@ const Sidebar = () => {
               <ListItem
                 button
                 component={Link}
-                to="/manage-course-category"
+                to="/dashboard/manage-course-category"
                 sx={{
                   pl: 4,
                   backgroundColor: 'white',
@@ -358,7 +361,7 @@ const Sidebar = () => {
               <ListItem
                 button
                 component={Link}
-                to="/income"
+                to="/dashboard/income"
                 sx={{
                   pl: 4,
                   backgroundColor: 'white',
@@ -378,7 +381,7 @@ const Sidebar = () => {
               <ListItem
                 button
                 component={Link}
-                to="/expense"
+                to="/dashboard/expense"
                 sx={{
                   pl: 4,
                   backgroundColor: 'white',

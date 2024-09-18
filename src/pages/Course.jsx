@@ -125,7 +125,7 @@ const AddCourseModal = ({ open, onClose, onSubmit, categories }) => {
 };
 
 const Course = () => {
-  const Token = "3f17479bd1399b6b048d06a6eba63281f3a0aff5";
+  const Token = localStorage.getItem('authToken');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState('');
@@ -228,6 +228,29 @@ const Course = () => {
     }
   };
 
+  const handleDeleteCourse = async (courseId) => {
+    try {
+      await axios.delete(`https://crpch.in/api/ka/course/?id=${courseId}`, {
+        headers: {
+          Authorization: `Token ${Token}`,
+        },
+      });
+
+      setSnackbarMessage('Course deleted successfully!');
+      setSnackbarSeverity('success');
+
+      const updatedCourses = courses.filter((course) => course.id !== courseId);
+      setCourses(updatedCourses);
+    } catch (error) {
+      console.error('Error deleting course:', error);
+      setSnackbarMessage('Failed to delete course.');
+      setSnackbarSeverity('error');
+    } finally {
+      setSnackbarOpen(true);
+    }
+  }
+
+
 
   const filteredCourses = courses.filter((course) =>
     course.COURSE_name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -280,34 +303,37 @@ const Course = () => {
               <TableCell align='center'>Course Name</TableCell>
               <TableCell align='center'>Category</TableCell>
               <TableCell align='center'>Fees</TableCell>
-              <TableCell align="right">Actions</TableCell>
+              <TableCell align="center">Actions</TableCell>
             </TableRow>
           </TableHead>
 <TableBody>
-  {filteredCourses
-    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-    .map((course) => (
-      <TableRow key={course.id}>
-        <TableCell align='center'>{course.COURSE_name}</TableCell>
-        <TableCell align='center'>
-          {course.COURSE_cat && course.COURSE_cat.COURSE_category 
+  {filteredCourses.length > 0 ? (
+    filteredCourses
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      .map((course) => (
+        <TableRow key={course.id}>
+          <TableCell align='center'>{course.COURSE_name}</TableCell>
+          <TableCell align='center'>{course.COURSE_cat && course.COURSE_cat.COURSE_category 
             ? course.COURSE_cat.COURSE_category 
-            : "No category"} 
-        </TableCell>
-        <TableCell align='center'>{course.COURSE_fee}</TableCell>
-        <TableCell align="right">
-          <IconButton aria-label="edit">
-            <EditIcon />
-          </IconButton>
-          <IconButton aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
-          <IconButton aria-label="actions">
-            <MoreVertIcon />
-          </IconButton>
-        </TableCell>
-      </TableRow>
-    ))}
+            : "No category"}</TableCell>
+          <TableCell align='center'>{course.COURSE_fee}</TableCell>
+          <TableCell align='center'>
+            <IconButton>
+              <EditIcon color="primary" />
+            </IconButton>
+            <IconButton onClick={() => handleDeleteCourse(course.id)}>
+              <DeleteIcon color="secondary" />
+            </IconButton>
+          </TableCell>
+        </TableRow>
+      ))
+  ) : (
+    <TableRow>
+      <TableCell colSpan={4} align='center'>
+        No courses found.
+      </TableCell>
+    </TableRow>
+  )}
 </TableBody>
 
         </Table>

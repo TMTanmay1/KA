@@ -228,7 +228,7 @@ const EditBatchDialog = ({ open, onClose, onSubmit, batch }) => {
 
 // Main BatchRegistration Component
 const BatchRegistration = () => {
-  const Token = "3f17479bd1399b6b048d06a6eba63281f3a0aff5";
+  const Token = localStorage.getItem('authToken');
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -312,6 +312,7 @@ const BatchRegistration = () => {
       setModalOpen(false);
       setSnackbarMessage('Batch added successfully!');
       setSnackbarSeverity('success');
+
     } catch (error) {
       console.error('Error adding batch:', error);
       setSnackbarMessage('Failed to add batch.');
@@ -340,10 +341,48 @@ const BatchRegistration = () => {
       updateBatchList();
     }, [snackbarOpen]);
 
-  const handleDeleteBatch = (id) => {
-    const updatedBatches = batchData.filter((batch) => batch.id !== id);
-    setBatchData(updatedBatches);
+  const handleDeleteBatch = async(id) => {
+    try{
+      const response = await axios.delete(`https://crpch.in/api/ka/batch/?id=${id}`, {
+        headers: {
+          Authorization: `Token ${Token}`,
+        },
+      });
+
+      setSnackbarMessage('Batch deleted successfully!');
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
+
+      const updatedBatches = batchData.filter((batch) => batch.id !== id);
+      setBatchData(updatedBatches);
+      
+    } catch (error) {
+      console.error('Error deleting batch:', error);
+      setSnackbarMessage('Failed to delete batch.');
+      setSnackbarSeverity('error');
+    } finally {
+      setSnackbarOpen(true);
+    }
   };
+
+  // useEffect(() => {
+  //   const updateBatchList = async () => {
+  //     try {
+  //       const response = await axios.get(`https://crpch.in/api/ka/batch/`, {
+  //         headers: {
+  //           Authorization: `Token ${Token}`,
+  //         },
+  //       });
+
+  //       setBatchData(response.data.table_data);
+  //     } catch (error) {
+  //       console.error('Error fetching batches:', error);
+  //     }
+  //   };
+
+  //   updateBatchList();
+  // }, [snackbarOpen]);
+
 
   const handleEditBatch = (batch) => {
     setCurrentBatch(batch);
@@ -409,28 +448,37 @@ const BatchRegistration = () => {
               <TableCell align='center'>Course</TableCell>
               <TableCell align='center'>Start Date</TableCell>
               <TableCell align='center'>End Date</TableCell>
-              <TableCell align="right">Actions</TableCell>
+              <TableCell align="center">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredBatchData
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((batch) => (
-                <TableRow key={batch.id}>
-                  <TableCell align='center'>{batch.BATCH_name}</TableCell>
-                  <TableCell align='center'>{batch.COURSE.COURSE_name}</TableCell>
-                  <TableCell align='center'>{batch.start_date}</TableCell>
-                  <TableCell align='center'>{batch.end_date}</TableCell>
-                  <TableCell align="right">
-                    <IconButton onClick={() => handleEditBatch(batch)}>
-                      <EditIcon color="primary" />
-                    </IconButton>
-                    <IconButton onClick={() => handleDeleteBatch(batch.id)}>
-                      <DeleteIcon color="secondary" />
-                    </IconButton>
+            {filteredBatchData.length > 0 ? (
+              filteredBatchData
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((batch) => (
+                  <TableRow key={batch.id}>
+                    <TableCell align='center'>{batch.BATCH_name}</TableCell>
+                    <TableCell align='center'>{batch.COURSE.COURSE_name}</TableCell>
+                    <TableCell align='center'>{batch.start_date}</TableCell>
+                    <TableCell align='center'>{batch.end_date}</TableCell>
+                    <TableCell align="center">
+                      <IconButton onClick={() => handleEditBatch(batch)}>
+                        <EditIcon color="primary" />
+                      </IconButton>
+                      <IconButton onClick={() => handleDeleteBatch(batch.id)}>
+                        <DeleteIcon color="error" />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                )
+              )) : (
+                <TableRow>
+                  <TableCell colSpan={5} align="center">
+                    No batches found.
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
+
           </TableBody>
         </Table>
       </TableContainer>

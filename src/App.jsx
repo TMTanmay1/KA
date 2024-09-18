@@ -12,24 +12,31 @@ import RegisteredStudents from './pages/RegisteredStudents.jsx';
 import AppliedStudent from './pages/AppliedStudent.jsx';
 import OnboardingStudent from './pages/OnboardingStudent.jsx';
 import AddFee from './pages/AddFee.jsx';
+import Login from './pages/Login.jsx';
+import LedgerPage from './pages/LedgerPage.jsx';
+import ViewProfile from './pages/ViewProfile.jsx';
 
 function App() {
   return (
     // <ThemeProvider theme={theme}>
       <Router>
       <Routes>
-        <Route path="/" element={<AppLayout />}>
+        <Route path="/" element={<Login />} />
+        <Route path="/dashboard" element={<AppLayout />}>
           <Route index element={<Home />} />
-          <Route path="batch-registration" element={<BatchRegistration />} />
-          <Route path="student-registration" element={<StudentRegistration />} />
-          <Route path="manage-course-category" element={<CourseCategory />} />
-          <Route path="course" element={<Course />} />
-          <Route path="income" element={<Income />} />
-          <Route path="expense" element={<Expense />} />
-          <Route path="registered-students" element={<RegisteredStudents />} />
-          <Route path="applied-student" element={<AppliedStudent />} />
-          <Route path="onboarding-student" element={<OnboardingStudent />} />
-          <Route path="add-fee" element={<AddFee />} />
+          <Route path="/dashboard/batch-registration" element={<BatchRegistration />} />
+          <Route path="/dashboard/student-registration" element={<StudentRegistration />} />
+          <Route path="/dashboard/manage-course-category" element={<CourseCategory />} />
+          <Route path="/dashboard/course" element={<Course />} />
+          <Route path="/dashboard/income" element={<Income />} />
+          <Route path="/dashboard/expense" element={<Expense />} />
+          <Route path="/dashboard/registered-students" element={<RegisteredStudents />} />
+          <Route path="/dashboard/applied-student" element={<AppliedStudent />} />
+          <Route path="/dashboard/onboarding-student" element={<OnboardingStudent />} />
+          <Route path="/dashboard/add-fee" element={<AddFee />} />
+          <Route path="/dashboard/view-ledger" element={<LedgerPage />} />
+          <Route path="/dashboard/view-profile" element={<ViewProfile />} />
+
         </Route>
       </Routes>
       </Router>

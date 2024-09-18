@@ -1,7 +1,57 @@
-import React from 'react';
-import { TextField, Button, Grid, Typography, Box } from '@mui/material';
+import React,{useEffect, useState} from 'react';
+import axios from 'axios';
+import { TextField, Button, Grid, Typography, Box , 
+  Snackbar,
+  Alert,} from '@mui/material';
+import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function AddFee() {
+  const navigate = useNavigate();
+  const Token = localStorage.getItem('authToken');
+  const location = useLocation();
+  const studentData = location.state?.student;
+
+  const[monthlyFeeAmount, setMonthlyFeeAmount] = useState('');
+  // const[ofMonth, setOfMonth] = useState('');
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+
+  useEffect(() => {
+    if (studentData) {
+      setMonthlyFeeAmount('');
+    }
+  }, [studentData]);
+
+  const handleAddFee = async () => {
+    console.log(studentData.id, monthlyFeeAmount, ofMonth);
+    
+    try {
+      const response = await axios.put(`https://crpch.in/api/ka/monthly-fee-update/?id=${studentData.id}`, {
+        paid_amount: monthlyFeeAmount,
+      }, {
+        headers: {
+          Authorization: `Token ${Token}`,
+        },
+      });
+
+      setSnackbarMessage('Fee added successfully');
+      setSnackbarSeverity('success');
+
+      navigate('/dashboard/registered-students'); 
+    } catch (error) {
+      console.error('Error adding fee:', error);
+
+      setSnackbarMessage('Failed to add fee');
+      setSnackbarSeverity('error');
+    } finally {
+      setSnackbarOpen(true);
+    }
+  }
+
+
   return (
     <Box 
       sx={{ 
@@ -27,6 +77,8 @@ function AddFee() {
             required
             variant="outlined"
             fullWidth
+            value={studentData?.name}
+            disabled
           />
         </Grid>
 
@@ -37,6 +89,8 @@ function AddFee() {
             required
             variant="outlined"
             fullWidth
+            value={studentData?.BATCH.BATCH_name}
+            disabled
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -45,6 +99,8 @@ function AddFee() {
             required
             variant="outlined"
             fullWidth
+            value={studentData?.COURSE.COURSE_name}
+            disabled
           />
         </Grid>
 
@@ -55,6 +111,8 @@ function AddFee() {
             required
             variant="outlined"
             fullWidth
+            value={studentData?.total_paid_amount}
+            disabled
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -63,6 +121,8 @@ function AddFee() {
             required
             variant="outlined"
             fullWidth
+            value={studentData?.COURSE.COURSE_fee - studentData?.total_paid_amount}
+            disabled
           />
         </Grid>
 
@@ -73,6 +133,8 @@ function AddFee() {
             required
             variant="outlined"
             fullWidth
+            value={studentData?.COURSE.COURSE_fee}
+            disabled
           />
         </Grid>
 
@@ -83,16 +145,20 @@ function AddFee() {
             required
             variant="outlined"
             fullWidth
+            value={monthlyFeeAmount}
+            onChange={(e) => setMonthlyFeeAmount(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        {/* <Grid item xs={12} md={6}>
           <TextField
             label="Of Month"
             required
             variant="outlined"
             fullWidth
+            value={ofMonth}
+            onChange={(e) => setOfMonth(e.target.value)}
           />
-        </Grid>
+        </Grid> */}
       </Grid>
 
       {/* Buttons aligned at the bottom */}
@@ -112,10 +178,20 @@ function AddFee() {
         <Button 
           variant="contained" 
           color="primary"
+          onClick={handleAddFee}
         >
           Save
         </Button>
       </div>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
