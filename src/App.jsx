@@ -15,6 +15,8 @@ import AddFee from './pages/AddFee.jsx';
 import Login from './pages/Login.jsx';
 import LedgerPage from './pages/LedgerPage.jsx';
 import ViewProfile from './pages/ViewProfile.jsx';
+import AllStudents from './pages/AllStudents.jsx';
+import StudyMaterial from './pages/StudyMaterial.jsx';
 
 function App() {
   return (
@@ -36,7 +38,8 @@ function App() {
           <Route path="/dashboard/add-fee" element={<AddFee />} />
           <Route path="/dashboard/view-ledger" element={<LedgerPage />} />
           <Route path="/dashboard/view-profile" element={<ViewProfile />} />
-
+          <Route path="/dashboard/all-students" element={<AllStudents />} />
+          <Route path="/dashboard/study-material" element={<StudyMaterial />} />
         </Route>
       </Routes>
       </Router>

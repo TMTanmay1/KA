@@ -26,10 +26,10 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import axios from 'axios';
 import SearchIcon from '@mui/icons-material/Search';
+import axios from 'axios';
 
+// AddExpenseModal component with disableEnforceFocus and disableAutoFocus fixes
 const AddExpenseModal = ({ open, onClose, onSubmit }) => {
   const [expenseReason, setExpenseReason] = useState('');
   const [expenseAmount, setExpenseAmount] = useState('');
@@ -52,6 +52,8 @@ const AddExpenseModal = ({ open, onClose, onSubmit }) => {
       }}
       aria-labelledby="add-expense-modal-title"
       aria-describedby="add-expense-modal-description"
+      disableEnforceFocus={true}  // Disable automatic focus enforcement
+      disableAutoFocus={true}     // Disable automatic focus on open
     >
       <Fade in={open}>
         <Box
@@ -139,8 +141,7 @@ const Expense = () => {
     };
 
     fetchExpenses();
-  }
-  , []);
+  }, [Token]);
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -156,6 +157,7 @@ const Expense = () => {
   };
 
   const handleAddExpense = async (expense) => {
+  
     try {
       const response = await axios.post('https://crpch.in/api/ka/assets/', {
         reason: expense.reason,
@@ -166,16 +168,12 @@ const Expense = () => {
         },
       });
 
-      if (response.status === 200) {
         setSnackbarMessage('Expense added successfully');
         setSnackbarSeverity('success');
         setSnackbarOpen(true);
-        // Optionally update the expenses state here
-      } else {
-        setSnackbarMessage('Failed to add expense');
-        setSnackbarSeverity('error');
-        setSnackbarOpen(true);
-      }
+
+        setExpenses([...expenses, response.data]);
+
     } catch (error) {
       console.error(error);
       setSnackbarMessage('Failed to add expense');
@@ -183,6 +181,29 @@ const Expense = () => {
       setSnackbarOpen(true);
     }
   };
+
+  // update ecpense a
+
+  const handleDeleteExpense = async (id) => {
+    try {
+      const response = await axios.delete(`https://crpch.in/api/ka/assets/?id=${id}`, {
+        headers: {
+          Authorization: `Token ${Token}`,
+        },
+      });
+      
+      setSnackbarMessage('Expense deleted successfully');
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
+      setExpenses(expenses.filter((expense) => expense.id !== id));
+    } catch (error) {
+      console.error(error);
+      setSnackbarMessage('Failed to delete expense');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    }
+  }
+
 
   const filteredExpenses = expenses.filter((expense) =>
     expense.reason.toLowerCase().includes(searchTerm.toLowerCase())
@@ -259,10 +280,10 @@ const Expense = () => {
                     <TableCell align='center'>₹{expense.expence_daily}</TableCell>
                     <TableCell align='center'>
                       <IconButton>
-                        <EditIcon color='primary'/>
+                        <EditIcon color='primary' />
                       </IconButton>
-                      <IconButton>
-                        <DeleteIcon color='secondary'/>
+                      <IconButton onClick={() => handleDeleteExpense(expense.id)}>  
+                        <DeleteIcon color='secondary' />
                       </IconButton>
                     </TableCell>
                   </TableRow>
@@ -274,7 +295,6 @@ const Expense = () => {
                 </TableCell>
               </TableRow>
             )}
-            
           </TableBody>
         </Table>
       </TableContainer>

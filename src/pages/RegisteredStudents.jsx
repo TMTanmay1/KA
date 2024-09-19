@@ -99,7 +99,7 @@ const RegisteredStudents = () => {
 
   const handleDeleteRegistration = async (id) => {
     try {
-      const response = await axios.delete(`https://crpch.in/api/ka/registered_student/?student_id=${id}`, {
+      const response = await axios.delete(`https://crpch.in/api/ka/registered_student/?id=${id}`, {
         headers: {
           Authorization: `Token ${Token}`,
         },
@@ -108,7 +108,7 @@ const RegisteredStudents = () => {
       
       setSnackbarMessage('Student registration deleted successfully');
       setSnackbarSeverity('success');
-
+      setStudentsData(studentsData.filter((student) => student.id !== id));
     } catch (error) {   
       console.error('Error deleting student registration:', error);
       setSnackbarMessage('Failed to delete student registration');
@@ -117,6 +117,36 @@ const RegisteredStudents = () => {
       setSnackbarOpen(true);
     }
   };
+
+
+  const handleUpdateStudentStatus = async (id, isDropout, isPassout) => {
+
+    console.log('isDropout:', isDropout);
+    console.log('isPassout:', isPassout);
+    console.log('id:', id);
+    try {
+      const response = await axios.get(
+        `https://crpch.in/api/ka/student_status/?student_id=${id}&active=${'False'}&pass=${isPassout}&drop=${isDropout}`,
+        {
+          headers: {
+            Authorization: `Token ${Token}`,
+          },
+        }
+      );
+      
+      setSnackbarMessage(
+        isDropout ? 'Student marked as Dropout' : 'Student marked as Passout'
+      );
+      setSnackbarSeverity('success');
+    } catch (error) {
+      console.error('Error updating student status:', error);
+      setSnackbarMessage('Failed to update student status');
+      setSnackbarSeverity('error');
+    } finally {
+      setSnackbarOpen(true);
+    }
+  };
+  
 
   const filteredStudentsData = studentsData.filter((student) =>
     student.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -193,11 +223,29 @@ const RegisteredStudents = () => {
                       <MenuItem onClick={handleViewProfile}>View</MenuItem>
                       <MenuItem onClick={handleAddFee}>Add Fee</MenuItem>
                       <MenuItem onClick={handleViewLedger}>View Ledger</MenuItem>
-                      <MenuItem onClick={handleMenuClose}>Mark Dropout</MenuItem>
+                      {/* <MenuItem onClick={handleMenuClose}>Mark Dropout</MenuItem> */}
+                      <MenuItem
+                        onClick={() => {
+                          handleUpdateStudentStatus(student.id, 'True', 'False'); // Mark as Dropout
+                          handleMenuClose();
+                        }}
+                      >
+                        Mark Dropout
+                      </MenuItem>
+                      {/* <MenuItem onClick={handleMenuClose}>Mark Passout</MenuItem> */}
+                      
+                      <MenuItem
+  onClick={() => {
+    handleUpdateStudentStatus(student.id, false, true); // Mark as Passout
+    handleMenuClose();
+  }}
+>
+  Mark Passout
+</MenuItem>
                       <MenuItem  onClick={() => {
-    handleDeleteRegistration(student.id); // Call delete when clicked
-    handleMenuClose(); // Close the menu after the action
-  }}>Delete</MenuItem>
+                          handleDeleteRegistration(student.id); // Call delete when clicked
+                          handleMenuClose(); // Close the menu after the action
+                        }}>Delete</MenuItem>
                       
                     </Menu>
                   </TableCell>

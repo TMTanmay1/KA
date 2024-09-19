@@ -4,12 +4,14 @@ import { Link } from 'react-router-dom';
 import { Home, Person, School, Menu, Book, ExpandMore, ExpandLess, Add, ListAlt, InsertDriveFile, Category,  AccountBalance, Money } from '@mui/icons-material';
 import L from '../assets/L.jpeg';
 import Logo from '../assets/ka1.png';
+import PeopleIcon from '@mui/icons-material/People';
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
   const [batchManagementOpen, setBatchManagementOpen] = useState(false);
   const [courseModuleOpen, setCourseModuleOpen] = useState(false);
   const [studentManagementOpen, setStudentManagementOpen] = useState(false);
   const [assetOpen, setAssetOpen] = useState(false)
+  const [studyMaterialOpen, setStudyMaterialOpen] = useState(false)
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -31,12 +33,17 @@ const Sidebar = () => {
     setAssetOpen(!assetOpen);
   };
 
+  const handleStudyMaterialClick = () => {
+    setStudyMaterialOpen(!studyMaterialOpen);
+  };
+
   useEffect(() => {
     if (!open) {
       setBatchManagementOpen(false);
       setCourseModuleOpen(false);
       setStudentManagementOpen(false);
       setAssetOpen(false);
+      setStudyMaterialOpen(false);
     }
   }, [open]);
 
@@ -270,6 +277,27 @@ const Sidebar = () => {
                 </ListItemIcon>
                 <ListItemText primary="Registered Students" />
               </ListItem>
+
+              <ListItem
+                button
+                component={Link}
+                to="/dashboard/all-students"
+                sx={{
+                  pl: 4,
+                  backgroundColor: 'white',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                  my: 0.5,
+                  '&:hover': {
+                    backgroundColor: '#f5f5f5',
+                  },
+                }}
+              >
+                <ListItemIcon>
+                  <PeopleIcon />
+                </ListItemIcon>
+                <ListItemText primary="All Students" />
+              </ListItem>
             </List>
           </Collapse>
 
@@ -401,6 +429,50 @@ const Sidebar = () => {
             </List>
           </Collapse>
           
+          <ListItem
+            button
+            onClick={handleStudyMaterialClick}
+            sx={{
+              my: 1.5,
+              borderRadius: '8px',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.6)',
+                backdropFilter: 'blur(10px)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+              },
+            }}
+          >
+            <ListItemIcon>
+              <InsertDriveFile />
+            </ListItemIcon>
+            {open && <ListItemText primary="Study Material" />}
+            {open && (studyMaterialOpen ? <ExpandLess /> : <ExpandMore />)}
+          </ListItem>
+          <Collapse in={studyMaterialOpen} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem
+                button
+                component={Link}
+                to="/dashboard/study-material"
+                sx={{
+                  pl: 4,
+                  backgroundColor: 'white',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                  my: 0.5,
+                  '&:hover': {
+                    backgroundColor: '#f5f5f5',
+                  },
+                }}
+              >
+                <ListItemIcon>
+                  <Add />
+                </ListItemIcon>
+                <ListItemText primary="Add Study Material" />
+              </ListItem>
+            </List>
+          </Collapse>
+
         </List>
       </Drawer>
     </>

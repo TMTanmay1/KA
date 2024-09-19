@@ -98,18 +98,19 @@ const AppliedStudent = () => {
 
   const handleDeleteApplied = async(id) =>{
     try{
-      const response = await axios.delete(`https://crpch.in/api/ka/student/?student_id=${id}`, {
+      const response = await axios.delete(`https://crpch.in/api/ka/student/?id=${id}`, {
         headers: {
           Authorization: `Token ${Token}`,
         },
       });
 
       
-      setSnackbarMessage('Student registration deleted successfully');
+      setSnackbarMessage('Applied Student deleted successfully');
       setSnackbarSeverity('success');
+      setStudentsData(studentsData.filter((student) => student.id !== id));
     } catch {
       console.error('Error deleting student registration:', error);
-      setSnackbarMessage('Failed to delete student registration');
+      setSnackbarMessage('Failed to delete applied student');
       setSnackbarSeverity('error');
     } finally {
       setSnackbarOpen(true);
