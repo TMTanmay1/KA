@@ -33,12 +33,6 @@ import AddIcon from '@mui/icons-material/Add';
 import axios from 'axios';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const mockStudyMaterials = [
-  { id: 1, course: 'Course 1', description: 'Description for material 1', files: [] },
-  { id: 2, course: 'Course 2', description: 'Description for material 2', files: [] },
-  // Add more mock data as needed
-];
-
 const AddStudyMaterialModal = ({ open, onClose, onSubmit, courses }) => {
   const [selectedCourse, setSelectedCourse] = useState('');
   const [description, setDescription] = useState('');
@@ -47,6 +41,8 @@ const AddStudyMaterialModal = ({ open, onClose, onSubmit, courses }) => {
   const handleFileChange = (event) => {
     setFiles([...event.target.files]);
   };
+
+  console.log(files);
 
   const handleSubmit = () => {
     onSubmit({ course: selectedCourse, description, files });
@@ -176,7 +172,7 @@ const StudyMaterial = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState('');
-  const [studyMaterials, setStudyMaterials] = useState(mockStudyMaterials);
+  const [studyMaterials, setStudyMaterials] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -201,6 +197,32 @@ const StudyMaterial = () => {
       }
     };
 
+    const fetchStudyMaterials = async () => {
+      try {
+        const response = await axios.get('https://crpch.in/api/ka/study_material/', {
+          headers: {
+            Authorization: `Token ${Token}`,
+          },
+        });
+        if (response.data.status) {
+          // Map the response data to match the structure expected in the table
+          const formattedData = response.data.table_data.map((material) => ({
+            id: material.id,
+            course: material.COURSE.COURSE_name,
+            description: material.file_description,
+            files: material.file ? [{ name: material.file.split('/').pop(), url: material.file }] : [],
+          }));
+          setStudyMaterials(formattedData);
+        } else {
+          console.error('Failed to fetch study materials');
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchStudyMaterials();
+
     fetchCourses();
   }, []);
 
@@ -217,19 +239,66 @@ const StudyMaterial = () => {
     setPage(0);
   };
 
-  const handleAddStudyMaterial = (material) => {
-    setStudyMaterials([
-      ...studyMaterials,
-      { id: studyMaterials.length + 1, course: material.course, description: material.description, files: material.files }
-    ]);
-    setSnackbarMessage('Study material added successfully');
-    setSnackbarSeverity('success');
-    setSnackbarOpen(true);
+  const handleAddStudyMaterial = async (material) => {
+    const formData = new FormData();
+    formData.append('file_description', material.description);
+    formData.append('COURSE', material.course); // Pass course ID
+    material.files.forEach((file, index) => {
+      formData.append('file', file); // Append each file
+    });
+  
+    try {
+      const response = await axios.post('https://crpch.in/api/ka/study_material/', formData, {
+        headers: {
+          'Authorization': `Token ${Token}`,
+          'Content-Type': 'multipart/form-data', // Required for file uploads
+        },
+      });
+  
+        setSnackbarMessage('Study material added successfully');
+        setSnackbarSeverity('success');
+
+        setStudyMaterials([...StudyMaterial, {
+          id: response.data.id,
+          course: material.course,
+          description: material.description,
+          files: material.files.map((file) => ({ name: file.name, url: file.url })),
+        }]
+        );
+      
+    } catch (error) {
+      console.error(error);
+      setSnackbarMessage('Error occurred while adding study material');
+      setSnackbarSeverity('error');
+    }
+  
+    setSnackbarOpen(true); // Open snackbar to show message
   };
+  
 
   const filteredStudyMaterials = studyMaterials.filter((material) =>
     material.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleDeleteStudyMaterial = async (id) => {
+    try {
+      const response = await axios.delete(`https://crpch.in/api/ka/study_material/?id=${id}`, {
+        headers: {
+          Authorization: `Token ${Token}`,
+        },
+      });
+
+      setSnackbarMessage('Study material deleted successfully');
+      setSnackbarSeverity('success');
+      setStudyMaterials(studyMaterials.filter((material) => material.id !== id));
+    } catch (error) {
+      console.error('Error deleting study material:', error);
+      setSnackbarMessage('Failed to delete study material');
+      setSnackbarSeverity('error');
+    } finally {
+      setSnackbarOpen(true);
+    }
+  };
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
@@ -296,12 +365,14 @@ const StudyMaterial = () => {
                     <TableCell align='center'>{material.course}</TableCell>
                     <TableCell align='center'>{material.description}</TableCell>
                     <TableCell align='center'>
-                      {material.files.length > 0 ? material.files.map((file, index) => (
-                        <a key={index} href={URL.createObjectURL(file)} download>{file.name}</a>
+                    {material.files.length > 0 ? material.files.map((file, index) => (
+                        <a key={index} href={`https://crpch.in${file.url}`} download target="_blank" rel="noopener noreferrer">{file.name}</a>
                       )) : 'No files'}
                     </TableCell>
                     <TableCell align='center'>
-                    <IconButton>
+                    <IconButton onClick={()=>
+                      handleDeleteStudyMaterial(material.id)
+                    }>
                         <DeleteIcon color='secondary' />
                       </IconButton>
                     </TableCell>

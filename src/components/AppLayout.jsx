@@ -11,7 +11,7 @@ const AppLayout = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
-    Cookies.remove('LoggedIn');
+    Cookies.remove('Login');
     navigate('/');
   }
   
