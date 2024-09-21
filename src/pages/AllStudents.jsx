@@ -149,7 +149,10 @@ const AllStudents = () => {
                 .map((student) => (
                   <TableRow key={student.id}>
                     <TableCell align="center">{student.name}</TableCell>
-                    <TableCell align="center">{student.BATCH.BATCH_name}</TableCell>
+                    <TableCell align="center">
+  {student.BATCH ? student.BATCH.BATCH_name : "Batch not registered"}
+</TableCell>
+
                     <TableCell align="center">{student.COURSE.COURSE_name}</TableCell>
                     <TableCell align="center">{student.gender}</TableCell>
                     <TableCell align="center">{student.mobile_no}</TableCell>
