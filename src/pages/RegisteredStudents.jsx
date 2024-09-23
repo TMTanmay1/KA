@@ -237,7 +237,7 @@ const RegisteredStudents = () => {
                       
                       <MenuItem
   onClick={() => {
-    handleUpdateStudentStatus(student.id, false, true); // Mark as Passout
+    handleUpdateStudentStatus(student.id, 'False', 'True'); // Mark as Passout
     handleMenuClose();
   }}
 >
