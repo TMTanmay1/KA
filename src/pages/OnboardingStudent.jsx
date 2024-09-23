@@ -21,6 +21,7 @@ function OnboardingStudent() {
   const [paidAmount, setPaidAmount] = useState('');
   const [dueAmount, setDueAmount] = useState('');
   const [courseAmount, setCourseAmount] = useState('');
+  const [password, setPassword] = useState('');
   const [batches, setBatches] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -77,7 +78,7 @@ function OnboardingStudent() {
   };
 
 
-  console.log(selectBatch,studentData.COURSE.id,paidAmount,dueAmount);
+  console.log(selectBatch,studentData.COURSE.id,paidAmount,dueAmount,password );
   
 
   const handleSubmit = async () => {
@@ -87,6 +88,7 @@ function OnboardingStudent() {
         COURSE: studentData.COURSE.id,
         paid_amount: paidAmount,
         due_amount: dueAmount,
+        password: password,
       }, {
         headers: {
           Authorization: `Token ${Token}`,
@@ -252,6 +254,21 @@ function OnboardingStudent() {
             />
           </Grid>
         </Grid>
+        <Grid item xs={12}>
+            <Typography variant="subtitle1" gutterBottom>
+              Password
+            </Typography>
+            <TextField
+              required
+              fullWidth
+              id="password"
+              label="Enter password"
+              variant="outlined"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
+            </Grid>
 
         {/* Buttons */}
         <Box mt={3} display="flex" justifyContent="space-between">

@@ -258,13 +258,15 @@ const StudyMaterial = () => {
         setSnackbarMessage('Study material added successfully');
         setSnackbarSeverity('success');
 
-        setStudyMaterials([...StudyMaterial, {
-          id: response.data.id,
-          course: material.course,
-          description: material.description,
-          files: material.files.map((file) => ({ name: file.name, url: file.url })),
-        }]
-        );
+        setStudyMaterials(prevMaterials => [
+          ...prevMaterials, // Spread the existing materials
+          {
+            id: response.data.id,
+            course: material.course,
+            description: material.description,
+            files: material.files.map((file) => ({ name: file.name, url: file.url })),
+          },
+        ]);
       
     } catch (error) {
       console.error(error);

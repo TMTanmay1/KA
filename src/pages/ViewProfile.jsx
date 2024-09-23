@@ -43,7 +43,7 @@ const ViewProfile = () => {
 
   const {
     name, email, mobile_no, address, student_photo, 
-    BATCH, COURSE, start_date, end_date, gender, dob
+    BATCH, COURSE, start_date, end_date, gender, dob, password
   } = studentData;
 
   // Handle multiple or single courses
@@ -96,6 +96,9 @@ const ViewProfile = () => {
               </Typography>
               <Typography variant="body1" sx={{ mt: 1 }}>
                 <strong>Gender:</strong> {gender}
+              </Typography>
+              <Typography variant="body1" sx={{ mt: 1 }}>
+                <strong>Password:</strong> {password}
               </Typography>
 
             </CardContent>

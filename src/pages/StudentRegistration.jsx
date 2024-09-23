@@ -156,6 +156,7 @@ const StudentRegistration = () => {
       student_photo: p,
       student_document: d,
       student_sign: s,
+      password:''
     };
 
     console.log('Payload:', payload);
