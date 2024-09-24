@@ -163,7 +163,7 @@ const Income = () => {
                 .map((income, index) => (
                   <TableRow key={income.id}>
                     <TableCell align='center'>{income.student.name}</TableCell>
-                    <TableCell align='center'>{income.date}</TableCell>
+                    <TableCell align='center'>{income.payment_date}</TableCell>
                     <TableCell align='center'>₹{income.payment_amount}</TableCell>
                     <TableCell align='center'>{income.student.BATCH.BATCH_name}</TableCell>
                     <TableCell align='center'>₹{income.due_amount}</TableCell>

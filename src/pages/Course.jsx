@@ -27,6 +27,7 @@ import {
   Snackbar,
   Alert,
 } from '@mui/material';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -36,15 +37,33 @@ const AddCourseModal = ({ open, onClose, onSubmit, categories }) => {
   const [courseName, setCourseName] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [courseFee, setCourseFee] = useState('');
+  const [courseDuration, setCourseDuration] = useState('');
+  const [description, setDescription] = useState('');
+  const [image, setImage] = useState(null);
 
   const handleSubmit = () => {
     if (courseName && selectedCategory) {
-      onSubmit({ name: courseName, category: selectedCategory, fee: courseFee });
+      onSubmit({
+        name: courseName,
+        category: selectedCategory,
+        fee: courseFee,
+        duration: courseDuration,
+        description: description,
+        image: image
+      });
+      // Reset all fields
       setCourseName('');
       setSelectedCategory('');
       setCourseFee('');
+      setCourseDuration('');
+      setDescription('');
+      setImage(null);
       onClose();
     }
+  };
+
+  const handleImageUpload = (event) => {
+    setImage(event.target.files[0]);
   };
 
   return (
@@ -53,9 +72,7 @@ const AddCourseModal = ({ open, onClose, onSubmit, categories }) => {
       onClose={onClose}
       closeAfterTransition
       BackdropComponent={Backdrop}
-      BackdropProps={{
-        timeout: 500,
-      }}
+      BackdropProps={{ timeout: 500 }}
     >
       <Fade in={open}>
         <Box
@@ -72,6 +89,8 @@ const AddCourseModal = ({ open, onClose, onSubmit, categories }) => {
           <Typography variant="h6" gutterBottom>
             Add Course
           </Typography>
+
+          {/* Course Name */}
           <TextField
             fullWidth
             variant="outlined"
@@ -81,6 +100,8 @@ const AddCourseModal = ({ open, onClose, onSubmit, categories }) => {
             required
             sx={{ mb: 2 }}
           />
+
+          {/* Course Category */}
           <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
             <InputLabel id="category-label">Course Category</InputLabel>
             <Select
@@ -92,21 +113,77 @@ const AddCourseModal = ({ open, onClose, onSubmit, categories }) => {
             >
               {categories.map((category) => (
                 <MenuItem key={category.id} value={category.id}>
-                  {category.COURSE_category}  
+                  {category.COURSE_category}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
+
+          {/* Fee and Duration Fields */}
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                label="Course Fee"
+                value={courseFee}
+                onChange={(e) => setCourseFee(e.target.value)}
+                required
+                sx={{ mb: 2 }}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                label="Course Duration(in months)"
+                value={courseDuration}
+                onChange={(e) => setCourseDuration(e.target.value)}
+                required
+                sx={{ mb: 2 }}
+              />
+            </Grid>
+          </Grid>
+
+          {/* Course Description */}
           <TextField
             fullWidth
             variant="outlined"
-            label="Course Fee"
-            value={courseFee}
-            onChange={(e) => setCourseFee(e.target.value)}
-            required
+            label="Course Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            multiline
+            rows={3}
             sx={{ mb: 2 }}
           />
-          <Grid container spacing={2} justifyContent="flex-end">
+
+          {/* Upload Image */}
+          <Grid container spacing={2} alignItems="center">
+            <Grid item>
+              <Button
+                variant="outlined"
+                component="label"
+                startIcon={<UploadFileIcon />}
+              >
+                Upload Image
+                <input
+                  type="file"
+                  hidden
+                  onChange={handleImageUpload}
+                />
+              </Button>
+            </Grid>
+            <Grid item>
+              {image && (
+                <Typography variant="body2">
+                  {image.name}
+                </Typography>
+              )}
+            </Grid>
+          </Grid>
+
+          {/* Action Buttons */}
+          <Grid container spacing={2} justifyContent="flex-end" sx={{ mt: 2 }}>
             <Grid item>
               <Button variant="outlined" onClick={onClose}>
                 Discard
@@ -199,6 +276,8 @@ const Course = () => {
 
   const handleAddCourse = async (course) => {
     console.log(course);
+    console.log(course.image);
+    console.log(course.description, course.duration, course.fee, course.category, course.name);
     
     try {
       await axios.post(
@@ -207,11 +286,14 @@ const Course = () => {
           COURSE_name: course.name,
           COURSE_fee: course.fee,
           COURSE_cat: course.category,
+          COURSE_duration: course.duration,
+          COURSE_description: course.description,
+          COURSE_image: course.image,
         },
         {
           headers: {
             Authorization: `Token ${Token}`,
-            'Content-Type': 'application/json',
+            'Content-Type': 'multipart/form-data',
           },
         }
       );
@@ -303,6 +385,7 @@ const Course = () => {
               <TableCell align='center'>Course Name</TableCell>
               <TableCell align='center'>Category</TableCell>
               <TableCell align='center'>Fees</TableCell>
+              <TableCell align='center'>Duration</TableCell>
               <TableCell align="center">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -317,6 +400,8 @@ const Course = () => {
             ? course.COURSE_cat.COURSE_category 
             : "No category"}</TableCell>
           <TableCell align='center'>{course.COURSE_fee}</TableCell>
+          <TableCell align='center'>{course.COURSE_duration? course.COURSE_duration : "No duration"
+        }</TableCell>
           <TableCell align='center'>
             <IconButton>
               <EditIcon color="primary" />
