@@ -5,6 +5,9 @@ import { Home, Person, School, Menu, Book, ExpandMore, ExpandLess, Add, ListAlt,
 import L from '../assets/L.jpeg';
 import Logo from '../assets/ka1.png';
 import PeopleIcon from '@mui/icons-material/People';
+import Group from '@mui/icons-material/Group';
+import TaskIcon from '@mui/icons-material/Task';
+
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
   const [batchManagementOpen, setBatchManagementOpen] = useState(false);
@@ -12,6 +15,7 @@ const Sidebar = () => {
   const [studentManagementOpen, setStudentManagementOpen] = useState(false);
   const [assetOpen, setAssetOpen] = useState(false)
   const [studyMaterialOpen, setStudyMaterialOpen] = useState(false)
+  const [staffManagementOpen, setStaffManagementOpen] = useState(false)
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -37,6 +41,10 @@ const Sidebar = () => {
     setStudyMaterialOpen(!studyMaterialOpen);
   };
 
+  const handleStaffManagementClick = () => {
+    setStaffManagementOpen(!staffManagementOpen);
+  };
+
   useEffect(() => {
     if (!open) {
       setBatchManagementOpen(false);
@@ -44,6 +52,7 @@ const Sidebar = () => {
       setStudentManagementOpen(false);
       setAssetOpen(false);
       setStudyMaterialOpen(false);
+      setStaffManagementOpen(false);
     }
   }, [open]);
 
@@ -472,7 +481,70 @@ const Sidebar = () => {
               </ListItem>
             </List>
           </Collapse>
-
+          
+          <ListItem
+            button
+            onClick={handleStaffManagementClick}
+            sx={{
+              my: 1.5,
+              borderRadius: '8px',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.6)',
+                backdropFilter: 'blur(10px)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+              },
+            }}
+          >
+            <ListItemIcon>
+              <Group />
+            </ListItemIcon>
+            {open && <ListItemText primary="Staff Management" />}
+            {open && (staffManagementOpen ? <ExpandLess /> : <ExpandMore />)}
+          </ListItem>
+          <Collapse in={staffManagementOpen} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem
+                button
+                component={Link}
+                to="/dashboard/staff"
+                sx={{
+                  pl: 4,
+                  backgroundColor: 'white',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                  my: 0.5,
+                  '&:hover': {
+                    backgroundColor: '#f5f5f5',
+                  },
+                }}
+              >
+                <ListItemIcon>
+                  <Add />
+                </ListItemIcon>
+                <ListItemText primary="Staff Registration" />
+              </ListItem>
+              <ListItem
+                button
+                component={Link}
+                to="/dashboard/assigned-staff-tasks"
+                sx={{
+                  pl: 4,
+                  backgroundColor: 'white',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                  my: 0.5,
+                  '&:hover': {
+                    backgroundColor: '#f5f5f5',
+                  },
+                }}
+              >
+                <ListItemIcon>
+                  <TaskIcon />
+                </ListItemIcon>
+                <ListItemText primary="Assign Task" />
+              </ListItem>
+            </List>
+          </Collapse>
         </List>
       </Drawer>
     </>

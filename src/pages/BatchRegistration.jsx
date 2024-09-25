@@ -462,9 +462,9 @@ const BatchRegistration = () => {
                     <TableCell align='center'>{batch.start_date}</TableCell>
                     <TableCell align='center'>{batch.end_date}</TableCell>
                     <TableCell align="center">
-                      <IconButton onClick={() => handleEditBatch(batch)}>
+                      {/* <IconButton onClick={() => handleEditBatch(batch)}>
                         <EditIcon color="primary" />
-                      </IconButton>
+                      </IconButton> */}
                       <IconButton onClick={() => handleDeleteBatch(batch.id)}>
                         <DeleteIcon color="error" />
                       </IconButton>

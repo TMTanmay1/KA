@@ -33,31 +33,34 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SearchIcon from '@mui/icons-material/Search';
 
-const AddCourseModal = ({ open, onClose, onSubmit, categories }) => {
-  const [courseName, setCourseName] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [courseFee, setCourseFee] = useState('');
-  const [courseDuration, setCourseDuration] = useState('');
+const AddStaffModal = ({ open, onClose, onSubmit}) => {
+  const [staffName, setStaffName] = useState('');
+//   const [selectedCategory, setSelectedCategory] = useState('');
+  const [mobileNo, setMobileNo] = useState('');
+  const [email, setEmail] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState(null);
+  const [password, setPassword] = useState('');
 
   const handleSubmit = () => {
-    if (courseName && selectedCategory) {
+    if (staffName) {
       onSubmit({
-        name: courseName,
-        category: selectedCategory,
-        fee: courseFee,
-        duration: courseDuration,
-        description: description,
-        image: image
+        staff_name: staffName,
+        // category: selectedCategory,
+        mobile_no: mobileNo,
+        email : email,
+        address: description,
+        staff_image: image,
+        password: password,
       });
       // Reset all fields
-      setCourseName('');
-      setSelectedCategory('');
-      setCourseFee('');
-      setCourseDuration('');
+      setStaffName('');
+    //   setSelectedCategory('');
+      setMobileNo('');
+      setEmail('');
       setDescription('');
       setImage(null);
+        setPassword('');
       onClose();
     }
   };
@@ -87,22 +90,22 @@ const AddCourseModal = ({ open, onClose, onSubmit, categories }) => {
           }}
         >
           <Typography variant="h6" gutterBottom>
-            Add Course
+            Add Staff
           </Typography>
 
           {/* Course Name */}
           <TextField
             fullWidth
             variant="outlined"
-            label="Course Name"
-            value={courseName}
-            onChange={(e) => setCourseName(e.target.value)}
+            label="Staff Name"
+            value={staffName}
+            onChange={(e) => setStaffName(e.target.value)}
             required
             sx={{ mb: 2 }}
           />
 
           {/* Course Category */}
-          <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
+          {/* <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
             <InputLabel id="category-label">Course Category</InputLabel>
             <Select
               labelId="category-label"
@@ -117,7 +120,7 @@ const AddCourseModal = ({ open, onClose, onSubmit, categories }) => {
                 </MenuItem>
               ))}
             </Select>
-          </FormControl>
+          </FormControl> */}
 
           {/* Fee and Duration Fields */}
           <Grid container spacing={2}>
@@ -125,9 +128,9 @@ const AddCourseModal = ({ open, onClose, onSubmit, categories }) => {
               <TextField
                 fullWidth
                 variant="outlined"
-                label="Course Fee"
-                value={courseFee}
-                onChange={(e) => setCourseFee(e.target.value)}
+                label="Mobile No"
+                value={mobileNo}
+                onChange={(e) => setMobileNo(e.target.value)}
                 required
                 sx={{ mb: 2 }}
               />
@@ -136,20 +139,29 @@ const AddCourseModal = ({ open, onClose, onSubmit, categories }) => {
               <TextField
                 fullWidth
                 variant="outlined"
-                label="Course Duration(in months)"
-                value={courseDuration}
-                onChange={(e) => setCourseDuration(e.target.value)}
+                label="Email"   
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
                 sx={{ mb: 2 }}
               />
             </Grid>
           </Grid>
 
+          <TextField
+            fullWidth
+            variant="outlined"
+            label="Staff Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            sx={{ mb: 2 }}
+          />
+
           {/* Course Description */}
           <TextField
             fullWidth
             variant="outlined"
-            label="Course Description"
+            label="Staff Address"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             multiline
@@ -201,7 +213,7 @@ const AddCourseModal = ({ open, onClose, onSubmit, categories }) => {
   );
 };
 
-const Course = () => {
+const Staff = () => {
   const Token = localStorage.getItem('authToken');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -214,9 +226,9 @@ const Course = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   
   useEffect(() => {
-    const fetchCourses = async () => {
+    const fetchStaff = async () => {
       try {
-        const response = await axios.get(`https://crpch.in/api/ka/course/`, {
+        const response = await axios.get(`https://crpch.in/api/ka/staff/`, {
           headers: {
             Authorization: `Token ${Token}`,
           },
@@ -227,27 +239,13 @@ const Course = () => {
       }
     };
 
-    const fetchCourseCategories = async () => {
-      try {
-        const response = await axios.get(`https://crpch.in/api/ka/course/category/`, {
-          headers: {
-            Authorization: `Token ${Token}`,
-          },
-        });
-        setCategories(response.data.table_data);
-      } catch (error) {
-        console.error('Error fetching course categories:', error);
-      }
-    };
-
-    fetchCourses();
-    fetchCourseCategories();
+    fetchStaff();
   }, []);
 
   useEffect(() => {
-    const fetchCourses = async () => {
+    const fetchStaff = async () => {
       try {
-        const response = await axios.get(`https://crpch.in/api/ka/course/`, {
+        const response = await axios.get(`https://crpch.in/api/ka/staff/`, {
           headers: {
             Authorization: `Token ${Token}`,
           },
@@ -258,7 +256,7 @@ const Course = () => {
       }
     };
 
-    fetchCourses();
+    fetchStaff();
   }, [snackbarOpen]);
 
   const handleSearch = (event) => {
@@ -274,21 +272,18 @@ const Course = () => {
     setPage(0);
   };
 
-  const handleAddCourse = async (course) => {
+  const handleAddStaff = async (course) => {
     console.log(course);
-    console.log(course.image);
-    console.log(course.description, course.duration, course.fee, course.category, course.name);
-    
     try {
       await axios.post(
-        `https://crpch.in/api/ka/course/`,
+        `https://crpch.in/api/ka/staff/`,
         {
-          COURSE_name: course.name,
-          COURSE_fee: course.fee,
-          COURSE_cat: course.category,
-          COURSE_duration: course.duration,
-          COURSE_description: course.description,
-          COURSE_image: course.image,
+            staff_name: course.staff_name,
+            mobile_no: course.mobile_no,
+            email : course.email ,
+            password : course.password ,
+            address: course.address,
+            staff_image: course.staff_image,
         },
         {
           headers: {
@@ -299,11 +294,11 @@ const Course = () => {
       );
 
       setModalOpen(false);
-      setSnackbarMessage('Course added successfully!');
+      setSnackbarMessage('Staff added successfully!');
       setSnackbarSeverity('success');
     } catch (error) {
-      console.error('Error adding course:', error);
-      setSnackbarMessage('Failed to add course.');
+      console.error('Error adding staff:', error);
+      setSnackbarMessage('Failed to add staff.');
       setSnackbarSeverity('error');
     } finally {
       setSnackbarOpen(true);
@@ -335,7 +330,7 @@ const Course = () => {
 
 
   const filteredCourses = courses.filter((course) =>
-    course.COURSE_name.toLowerCase().includes(searchTerm.toLowerCase())
+    course.staff_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -344,7 +339,7 @@ const Course = () => {
         <Grid container spacing={2} alignItems="center" justifyContent="space-between">
           <Grid item xs={12} sm={6}>
             <Typography variant="h4" component="div">
-              Courses
+              Staff
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6} container justifyContent="flex-end">
@@ -355,7 +350,7 @@ const Course = () => {
               onClick={() => setModalOpen(true)}
               fullWidth={!(window.innerWidth > 600)}
             >
-              + Add Course
+              + Add Staff
             </Button>
           </Grid>
         </Grid>
@@ -376,16 +371,16 @@ const Course = () => {
         }}
       />
       <Typography variant="subtitle1" gutterBottom>
-        Total Courses: {filteredCourses.length}
+        Total Staff: {filteredCourses.length}
       </Typography>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell align='center'>Course Name</TableCell>
-              <TableCell align='center'>Category</TableCell>
-              <TableCell align='center'>Fees</TableCell>
-              <TableCell align='center'>Duration</TableCell>
+              <TableCell align='center'>Name</TableCell>
+              <TableCell align='center'>Mobile No</TableCell>
+              <TableCell align='center'>Email</TableCell>
+              <TableCell align='center'>Address</TableCell>
               <TableCell align="center">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -395,18 +390,13 @@ const Course = () => {
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
       .map((course) => (
         <TableRow key={course.id}>
-          <TableCell align='center'>{course.COURSE_name}</TableCell>
-          <TableCell align='center'>{course.COURSE_cat && course.COURSE_cat.COURSE_category 
-            ? course.COURSE_cat.COURSE_category 
-            : "No category"}</TableCell>
-          <TableCell align='center'>{course.COURSE_fee}</TableCell>
-          <TableCell align='center'>{course.COURSE_duration? course.COURSE_duration : "No duration"
+          <TableCell align='center'>{course.staff_name}</TableCell>
+          <TableCell align='center'>{course.mobile_no}</TableCell>
+          <TableCell align='center'>{course.email}</TableCell>
+          <TableCell align='center'>{course.password? course.password : "No Address found"
         }</TableCell>
           <TableCell align='center'>
-            {/* <IconButton>
-              <EditIcon color="primary" />
-            </IconButton> */}
-            <IconButton onClick={() => handleDeleteCourse(course.id)}>
+            <IconButton >
               <DeleteIcon color="secondary" />
             </IconButton>
           </TableCell>
@@ -415,7 +405,7 @@ const Course = () => {
   ) : (
     <TableRow>
       <TableCell colSpan={4} align='center'>
-        No courses found.
+        No Staff found.
       </TableCell>
     </TableRow>
   )}
@@ -432,11 +422,10 @@ const Course = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      <AddCourseModal
+      <AddStaffModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        onSubmit={handleAddCourse}
-        categories={categories}
+        onSubmit={handleAddStaff}
       />
       <Snackbar
         open={snackbarOpen}
@@ -451,4 +440,4 @@ const Course = () => {
   );
 };
 
-export default Course;
+export default Staff;

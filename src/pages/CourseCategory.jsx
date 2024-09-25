@@ -271,9 +271,9 @@ const CourseCategory = () => {
                   <TableRow key={category.id}>
                     <TableCell align='center'>{category.COURSE_category}</TableCell>
                     <TableCell align='center'>
-                      <IconButton>
+                      {/* <IconButton>
                         <EditIcon color="primary" />
-                      </IconButton>
+                      </IconButton> */}
                       <IconButton onClick={() => handleDeleteCategory(category.id)}>
                         <DeleteIcon color="secondary" />
                       </IconButton>

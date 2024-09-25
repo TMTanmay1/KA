@@ -279,9 +279,9 @@ const Expense = () => {
                     <TableCell align='center'>{expense.reason}</TableCell>
                     <TableCell align='center'>₹{expense.expence_daily}</TableCell>
                     <TableCell align='center'>
-                      <IconButton>
+                      {/* <IconButton>
                         <EditIcon color='primary' />
-                      </IconButton>
+                      </IconButton> */}
                       <IconButton onClick={() => handleDeleteExpense(expense.id)}>  
                         <DeleteIcon color='secondary' />
                       </IconButton>

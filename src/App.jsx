@@ -17,6 +17,8 @@ import LedgerPage from './pages/LedgerPage.jsx';
 import ViewProfile from './pages/ViewProfile.jsx';
 import AllStudents from './pages/AllStudents.jsx';
 import StudyMaterial from './pages/StudyMaterial.jsx';
+import Staff from './pages/Staff.jsx';
+import AssignTaskToStaff from './pages/AssignTaskToStaff.jsx';
 
 function App() {
   return (
@@ -40,6 +42,8 @@ function App() {
           <Route path="/dashboard/view-profile" element={<ViewProfile />} />
           <Route path="/dashboard/all-students" element={<AllStudents />} />
           <Route path="/dashboard/study-material" element={<StudyMaterial />} />
+          <Route path="/dashboard/staff" element={<Staff />} />
+          <Route path="/dashboard/assigned-staff-tasks" element={<AssignTaskToStaff />} />
         </Route>
       </Routes>
       </Router>
