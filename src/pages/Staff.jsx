@@ -380,7 +380,7 @@ const Staff = () => {
               <TableCell align='center'>Name</TableCell>
               <TableCell align='center'>Mobile No</TableCell>
               <TableCell align='center'>Email</TableCell>
-              <TableCell align='center'>Address</TableCell>
+              <TableCell align='center'>Password</TableCell>
               <TableCell align="center">Actions</TableCell>
             </TableRow>
           </TableHead>
