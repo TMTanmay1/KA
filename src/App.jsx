@@ -19,6 +19,7 @@ import AllStudents from './pages/AllStudents.jsx';
 import StudyMaterial from './pages/StudyMaterial.jsx';
 import Staff from './pages/Staff.jsx';
 import AssignTaskToStaff from './pages/AssignTaskToStaff.jsx';
+import StaffSettings from './pages/StaffSettings.jsx';
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
           <Route path="/dashboard/study-material" element={<StudyMaterial />} />
           <Route path="/dashboard/staff" element={<Staff />} />
           <Route path="/dashboard/assigned-staff-tasks" element={<AssignTaskToStaff />} />
+          <Route path="/dashboard/staff-settings" element={<StaffSettings />} />
         </Route>
       </Routes>
       </Router>

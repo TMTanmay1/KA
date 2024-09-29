@@ -233,14 +233,18 @@ const Staff = () => {
             Authorization: `Token ${Token}`,
           },
         });
+        console.log(response.data);
+        
         setCourses(response.data.table_data);
       } catch (error) {
-        console.error('Error fetching courses:', error);
+        console.error('Error fetching staff:', error);
       }
     };
 
     fetchStaff();
   }, []);
+
+  console.log(courses);
 
   useEffect(() => {
     const fetchStaff = async () => {
@@ -404,7 +408,7 @@ const Staff = () => {
       ))
   ) : (
     <TableRow>
-      <TableCell colSpan={4} align='center'>
+      <TableCell colSpan={5} align='center'>
         No Staff found.
       </TableCell>
     </TableRow>

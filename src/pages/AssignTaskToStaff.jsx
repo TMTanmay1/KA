@@ -494,7 +494,7 @@ const AssignTaskToStaff = () => {
       <TextField
         fullWidth
         variant="outlined"
-        placeholder="Search Course"
+        placeholder="Search Staff"
         value={searchTerm}
         onChange={handleSearch}
         style={{ marginBottom: '20px' }}
