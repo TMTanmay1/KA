@@ -28,15 +28,18 @@ import {
   Snackbar,
   Alert,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SearchIcon from '@mui/icons-material/Search';
 import PreviewIcon from '@mui/icons-material/Preview';
+import url from '../constant'
 
 function StaffSettings() {
   const Token = localStorage.getItem('authToken');
+  const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState('');
@@ -52,7 +55,7 @@ function StaffSettings() {
   useEffect(() => {
     const fetchStaff = async () => {
       try {
-        const response = await axios.get(`https://crpch.in/api/ka/staff/`, {
+        const response = await axios.get(`${url}api/ka/staff/`, {
           headers: {
             Authorization: `Token ${Token}`,
           },
@@ -82,6 +85,10 @@ function StaffSettings() {
   const filteredCourses = courses.filter((course) =>
     course.staff_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleGoToSettings = (id) => {
+    navigate(`/dashboard/staff-settings/settings-s-page/${id}`);
+  }
 
   return (
     <Container maxWidth="lg">
@@ -130,7 +137,6 @@ function StaffSettings() {
               <TableCell align='center'>Name</TableCell>
               <TableCell align='center'>Mobile No</TableCell>
               <TableCell align='center'>Email</TableCell>
-              <TableCell align='center'>Assign</TableCell>
               <TableCell align="center">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -145,20 +151,14 @@ function StaffSettings() {
           <TableCell align='center'>{course.email}</TableCell>
           <TableCell align='center'>
             <Button
-                variant="contained"
-                color="primary"
-                fullWidth={!(window.innerWidth > 600)}
-                >
-                Assign Task
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginRight: '10px' }}
+              onClick={() => handleGoToSettings(course.id)}
+            >
+              Go to Settings
             </Button>
-          </TableCell>
-          <TableCell align='center'>
-            <IconButton>
-              <PreviewIcon color="primary" />
-            </IconButton>
-            <IconButton >
-              <DeleteIcon color="secondary" />
-            </IconButton>
           </TableCell>
         </TableRow>
       ))

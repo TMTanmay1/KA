@@ -5,6 +5,7 @@ import { TextField, Button, Grid, Typography, Box ,
   Alert,} from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import url from '../constant'
 
 function AddFee() {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ function AddFee() {
     console.log(studentData.id, monthlyFeeAmount);
     
     try {
-      const response = await axios.put(`https://crpch.in/api/ka/monthly-fee-update/?id=${studentData.id}`, {
+      const response = await axios.put(`${url}api/ka/monthly-fee-update/?id=${studentData.id}`, {
         paid_amount: monthlyFeeAmount,
       }, {
         headers: {
