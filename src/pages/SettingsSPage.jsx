@@ -151,6 +151,7 @@ const leaveApplicationPolicyList = Object.entries(leaveApplicationPolicy).map(([
                 Authorization: `Token ${Token}`,
                 "Content-Type": "application/json",
                 cors: 'no-cors',
+                'Access-Control-Allow-Origin': '*',
             },
 
         });
