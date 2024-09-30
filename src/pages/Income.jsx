@@ -165,9 +165,13 @@ const Income = () => {
                     <TableCell align='center'>{income.student.name}</TableCell>
                     <TableCell align='center'>{income.payment_date}</TableCell>
                     <TableCell align='center'>₹{income.payment_amount}</TableCell>
-                    <TableCell align='center'>{income.student.BATCH.BATCH_name}</TableCell>
+                    <TableCell align='center'>{
+                      income.student.BATCH.BATCH_name ? income.student.BATCH.BATCH_name : "Batch not registered"
+                      }</TableCell>
                     <TableCell align='center'>₹{income.due_amount}</TableCell>
-                    <TableCell align='center'>₹{income.student.COURSE.COURSE_fee}</TableCell>
+                    <TableCell align='center'>₹{
+                      income.student.COURSE.COURSE_fee ? income.student.COURSE.COURSE_fee : "Course not registered"
+                      }</TableCell>
                   </TableRow>
                 ))
             ) : (
