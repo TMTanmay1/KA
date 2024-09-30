@@ -55,7 +55,7 @@ function StaffSettings() {
   useEffect(() => {
     const fetchStaff = async () => {
       try {
-        const response = await axios.get(`${url}api/ka/staff/`, {
+        const response = await axios.get(`https://crpch.in/api/ka/staff/`, {
           headers: {
             Authorization: `Token ${Token}`,
           },

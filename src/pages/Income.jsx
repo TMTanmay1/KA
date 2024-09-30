@@ -162,7 +162,9 @@ const Income = () => {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((income, index) => (
                   <TableRow key={income.id}>
-                    <TableCell align='center'>{income.student.name}</TableCell>
+                    <TableCell align='center'>{
+                      income.student.name ? income.student.name : "Student not registered"
+                      }</TableCell>
                     <TableCell align='center'>{income.payment_date}</TableCell>
                     <TableCell align='center'>₹{income.payment_amount}</TableCell>
                     <TableCell align='center'>{

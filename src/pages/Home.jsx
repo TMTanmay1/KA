@@ -244,10 +244,14 @@ const Home = () => {
           <TableRow key={row.id}>
             <TableCell align='center'>{index + 1}</TableCell>
             <TableCell align='center'>{row.BATCH_name}</TableCell>
-            <TableCell align='center'>{row.COURSE.COURSE_name}</TableCell>
+            <TableCell align='center'>{
+              row.COURSE.COURSE_name ? row.COURSE.COURSE_name : 'Course not registered'
+              }</TableCell>
             <TableCell align='center'>{row.start_date}</TableCell>
             <TableCell align='center'>{row.end_date}</TableCell>
-            <TableCell align='center'>{row.COURSE.COURSE_cat.COURSE_category}</TableCell>
+            <TableCell align='center'>{
+              row.COURSE.COURSE_cat.COURSE_category ? row.COURSE.COURSE_cat.COURSE_category : 'Category not registered'
+              }</TableCell>
           </TableRow>
         ))
     ) : (
