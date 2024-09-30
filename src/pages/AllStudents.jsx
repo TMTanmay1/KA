@@ -23,7 +23,7 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
-import url from '../constant';
+import urls from '../constant';
 
 const AllStudents = () => {
   const Token = localStorage.getItem('authToken');
@@ -39,7 +39,7 @@ const AllStudents = () => {
   // Fetch students based on status filter
   const fetchStudents = async (status = '') => {
     try {
-      const url = status ? `${url}api/ka/all_student/?type=${status}` : `${url}api/ka/all_student/`;
+      const url = status ? `https://crpch.in/api/ka/all_student/?type=${status}` : `https://crpch.in/api/ka/all_student/`;
       const response = await axios.get(url, {
         headers: {
           Authorization: `Token ${Token}`,

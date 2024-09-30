@@ -30,7 +30,7 @@ function AddFee() {
     console.log(studentData.id, monthlyFeeAmount);
     
     try {
-      const response = await axios.put(`${url}api/ka/monthly-fee-update/?id=${studentData.id}`, {
+      const response = await axios.put(`https://crpch.in/api/ka/monthly-fee-update/?id=${studentData.id}`, {
         paid_amount: monthlyFeeAmount,
       }, {
         headers: {
