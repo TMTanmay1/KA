@@ -277,7 +277,7 @@ const Staff = () => {
   };
 
   const handleAddStaff = async (course) => {
-    console.log(course);
+    console.log(course, "course");
     try {
       await axios.post(
         `https://crpch.in/api/ka/staff/`,

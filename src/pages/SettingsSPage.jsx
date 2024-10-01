@@ -129,74 +129,74 @@ const lateComingPolicyList = Object.entries(lateComingPolicy).map(([key, value])
 const overtimePolicyList = Object.entries(overtimePolicy).map(([key, value]) => ({ key, value }));
 const leaveApplicationPolicyList = Object.entries(leaveApplicationPolicy).map(([key, value]) => ({ key, value }));
 
-  // const handleSave = async() => {
-  //   try {
-  //       const response = await axios.post(`https://crpch.in/api/ka/staff/settings/?id=${id}`, {
-  //           base_salary: basePay,
-  //           work_timming: workTimingsList,
-  //           early_leaving: earlyLeavingPolicyList,
-  //           late_coming: lateComingPolicyList,
-  //           over_time: overtimePolicyList,
-  //           leave_application: leaveApplicationPolicyList,
-  //       },{
-  //           headers: {
-  //               Authorization: `Token ${Token}`,
-  //               "Content-Type": "application/json",
-  //               cors: 'no-cors',
-  //               'Access-Control-Allow-Origin': '*',
-  //           },
-
-  //       });
-  //       setSnackbarMessage('Settings saved successfully');
-  //       setSnackbarSeverity('success');
-  //       setSnackbarOpen(true);
-
-  //       navigate('/dashboard/staff-settings');
-
-  //   } catch (error) {
-  //       console.error('Error saving settings:', error);
-  //       setSnackbarMessage('Failed to save settings');
-  //       setSnackbarSeverity('error');
-  //       setSnackbarOpen(true);
-  //   }
-  // }
-
-  const handleSave = async () => {
+  const handleSave = async() => {
     try {
-        const response = await fetch(`https://crpch.in/api/ka/staff/settings/?id=${id}`, {
-            method: 'POST',
-            mode: 'no-cors',
+        const response = await axios.post(`https://crpch.in/api/ka/staff/settings/?id=${id}`, {
+            base_salary: basePay,
+            work_timming: workTimingsList,
+            early_leaving: earlyLeavingPolicyList,
+            late_coming: lateComingPolicyList,
+            over_time: overtimePolicyList,
+            leave_application: leaveApplicationPolicyList,
+        },{
             headers: {
                 Authorization: `Token ${Token}`,
                 "Content-Type": "application/json",
+                cors: 'no-cors',
                 'Access-Control-Allow-Origin': '*',
-                // Note: 'cors' and 'Access-Control-Allow-Origin' headers are usually handled by the server.
             },
-            body: JSON.stringify({
-                base_salary: basePay,
-                work_timming: workTimingsList,
-                early_leaving: earlyLeavingPolicyList,
-                late_coming: lateComingPolicyList,
-                over_time: overtimePolicyList,
-                leave_application: leaveApplicationPolicyList,
-            })
-        });
 
-        if (response.ok) {
-            setSnackbarMessage('Settings saved successfully');
-            setSnackbarSeverity('success');
-            setSnackbarOpen(true);
-            navigate('/dashboard/staff-settings');
-        } else {
-            throw new Error('Failed to save settings');
-        }
+        });
+        setSnackbarMessage('Settings saved successfully');
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
+
+        navigate('/dashboard/staff-settings');
+
     } catch (error) {
         console.error('Error saving settings:', error);
         setSnackbarMessage('Failed to save settings');
         setSnackbarSeverity('error');
         setSnackbarOpen(true);
     }
-};
+  }
+
+//   const handleSave = async () => {
+//     try {
+//         const response = await fetch(`https://crpch.in/api/ka/staff/settings/?id=${id}`, {
+//             method: 'POST',
+//             mode: 'no-cors',
+//             headers: {
+//                 Authorization: `Token ${Token}`,
+//                 "Content-Type": "application/json",
+//                 'Access-Control-Allow-Origin': '*',
+//                 // Note: 'cors' and 'Access-Control-Allow-Origin' headers are usually handled by the server.
+//             },
+//             body: JSON.stringify({
+//                 base_salary: basePay,
+//                 work_timming: workTimingsList,
+//                 early_leaving: earlyLeavingPolicyList,
+//                 late_coming: lateComingPolicyList,
+//                 over_time: overtimePolicyList,
+//                 leave_application: leaveApplicationPolicyList,
+//             })
+//         });
+
+//         if (response.ok) {
+//             setSnackbarMessage('Settings saved successfully');
+//             setSnackbarSeverity('success');
+//             setSnackbarOpen(true);
+//             navigate('/dashboard/staff-settings');
+//         } else {
+//             throw new Error('Failed to save settings');
+//         }
+//     } catch (error) {
+//         console.error('Error saving settings:', error);
+//         setSnackbarMessage('Failed to save settings');
+//         setSnackbarSeverity('error');
+//         setSnackbarOpen(true);
+//     }
+// };
 
 
   return (
