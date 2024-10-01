@@ -142,7 +142,7 @@ const leaveApplicationPolicyList = Object.entries(leaveApplicationPolicy).map(([
             headers: {
                 Authorization: `Token ${Token}`,
                 "Content-Type": "application/json",
-                cors: 'no-cors',
+                'cors': 'no-cors',
                 'Access-Control-Allow-Origin': '*',
             },
 
