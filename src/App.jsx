@@ -21,6 +21,7 @@ import Staff from './pages/Staff.jsx';
 import AssignTaskToStaff from './pages/AssignTaskToStaff.jsx';
 import StaffSettings from './pages/StaffSettings.jsx';
 import SettingsSPage from './pages/SettingsSPage.jsx';
+import ViewSAttendance from './pages/ViewSAttendance.jsx';
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function App() {
           <Route path="/dashboard/assigned-staff-tasks" element={<AssignTaskToStaff />} />
           <Route path="/dashboard/staff-settings" element={<StaffSettings />} />
           <Route path="/dashboard/staff-settings/settings-s-page/:id" element={<SettingsSPage />} />
+          <Route path="/dashboard/view-staff-attendance" element={<ViewSAttendance />}  />
         </Route>
       </Routes>
       </Router>

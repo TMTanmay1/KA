@@ -8,6 +8,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import Group from '@mui/icons-material/Group';
 import TaskIcon from '@mui/icons-material/Task';
 import SettingsAccessibilityIcon from '@mui/icons-material/SettingsAccessibility';
+import FlakyIcon from '@mui/icons-material/Flaky';
 
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
@@ -544,6 +545,27 @@ const Sidebar = () => {
                 </ListItemIcon>
                 <ListItemText primary="Assign Task" />
               </ListItem>
+
+              <ListItem
+                button
+                component={Link}
+                to="/dashboard/view-staff-attendance"
+                sx={{
+                  pl: 4,
+                  backgroundColor: 'white',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                  my: 0.5,
+                  '&:hover': {
+                    backgroundColor: '#f5f5f5',
+                  },
+                }}
+              >
+                <ListItemIcon>
+                  <FlakyIcon />
+                </ListItemIcon>
+                <ListItemText primary="View Staff Attendance" />
+              </ListItem> 
 
               <ListItem
                 button
