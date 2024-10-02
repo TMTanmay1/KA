@@ -136,10 +136,10 @@ const ViewSAttendance = () => {
         <Grid container spacing={2} alignItems="center" justifyContent="space-between">
           <Grid item xs={12} sm={6}>
             <Typography variant="h4" component="div">
-              Staff
+              Review Staff Attendance
             </Typography>
           </Grid>
-          <Grid item xs={12} sm={6} container justifyContent="flex-end">
+          {/* <Grid item xs={12} sm={6} container justifyContent="flex-end">
             <Button
               variant="contained"
               color="primary"
@@ -149,7 +149,7 @@ const ViewSAttendance = () => {
             >
               + Add Staff
             </Button>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Box>
       <TextField
