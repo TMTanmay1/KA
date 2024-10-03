@@ -52,6 +52,7 @@ const ViewSAttendance = () => {
         const response = await axios.get(`https://crpch.in/api/ka/student/punchin_punchout/`, {
           headers: {    
             Authorization: `Token ${Token}`,
+            'Access-Control-Allow-Origin': '*',
           },
         });
         console.log(response.data);
@@ -97,6 +98,12 @@ const ViewSAttendance = () => {
     setPage(0);
   };
 
+  const handleImageClick = (image) => {
+    // Open the image in a new tab
+    const fullImageUrl = `https://crpch.in${image}`;
+    window.open(fullImageUrl, '_blank');
+  };
+
 
   const handleDeleteCourse = async (courseId) => {
     try {
@@ -129,6 +136,31 @@ const ViewSAttendance = () => {
   const filteredCourses = courses.filter((course) =>
     course.staff.staff_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleActionClick = async (courseId) => {
+    try {
+      const response = await axios.put(
+        `https://crpch.in/api/ka/student/punchin_punchout/?id=${courseId}`,
+        {
+          login_true: 'False',
+          login_false: 'True',
+        },
+        {
+          headers: {
+            Authorization: `Token ${Token}`, // Pass the token in the headers
+          },
+        }
+      );
+      setSnackbarMessage('Marked as Absent!');
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error('Error during API request:', error);
+      setSnackbarMessage('Failed to mark as Absent.');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    }
+  };
 
   return (
     <Container maxWidth="lg">
@@ -178,8 +210,9 @@ const ViewSAttendance = () => {
               <TableCell align='center'>Mobile No</TableCell>
                 <TableCell align='center'>PunchIn</TableCell>
                 <TableCell align='center'>PunchOut</TableCell>
+                <TableCell align='center'>Image</TableCell>
               <TableCell align='center'>Location</TableCell>
-              {/* <TableCell align="center">Actions</TableCell> */}
+              <TableCell align="center">Actions</TableCell>
             </TableRow>
           </TableHead>
 <TableBody>
@@ -191,18 +224,42 @@ const ViewSAttendance = () => {
           <TableCell align='center'>{course.staff.staff_name}</TableCell>
           <TableCell align='center'>{course.staff.mobile_no}</TableCell>
           <TableCell align='center'>{course.login_time ? course.login_time: "N/A"}</TableCell>
-          <TableCell align='center'>{course.logout_time? course.logout_time : "N/A"}
-        </TableCell>
+          <TableCell align='center'>{course.logout_time? course.logout_time : "N/A"}</TableCell>  
+          <TableCell align="center">
+                <span
+                  style={{ color: 'blue', cursor: 'pointer', textDecoration: 'underline' }}
+                  onClick={() => handleImageClick(course.staff.staff_image)}
+                >
+                  View
+                </span>
+              </TableCell>
           <TableCell align='center'>
           <IconButton onClick={() => openMap(course.lat, course.longt)}>
                       <VisibilityIcon color="secondary" />
             </IconButton>
           </TableCell>
+
+          <TableCell align="center">
+                {course.login_time && (
+                  <Button
+                    variant="contained"
+                    style={{
+                      backgroundColor: 'red',
+                      color: 'white',
+                      fontWeight: 'bold',
+                      borderRadius: '5px',
+                    }}
+                    onClick={() => handleActionClick(course.id)}
+                  >
+                    A
+                  </Button>
+                )}
+              </TableCell>
         </TableRow>
       ))
   ) : (
     <TableRow>
-      <TableCell colSpan={5} align='center'>
+      <TableCell colSpan={7} align='center'>
         No Staff found.
       </TableCell>
     </TableRow>
