@@ -52,7 +52,6 @@ const ViewSAttendance = () => {
         const response = await axios.get(`https://crpch.in/api/ka/student/punchin_punchout/`, {
           headers: {    
             Authorization: `Token ${Token}`,
-            'Access-Control-Allow-Origin': '*',
           },
         });
         console.log(response.data);
