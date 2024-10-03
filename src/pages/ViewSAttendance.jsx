@@ -245,6 +245,7 @@ const ViewSAttendance = () => {
                     variant="contained"
                     style={{
                       backgroundColor: 'red',
+                      cursor: !course.login_true ? 'pointer' : 'not-allowed',
                       color: 'white',
                       fontWeight: 'bold',
                       borderRadius: '5px',
