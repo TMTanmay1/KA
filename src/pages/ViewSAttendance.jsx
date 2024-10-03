@@ -46,6 +46,7 @@ const ViewSAttendance = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   
+  
   useEffect(() => {
     const fetchStaff = async () => {
       try {
@@ -249,6 +250,7 @@ const ViewSAttendance = () => {
                       borderRadius: '5px',
                     }}
                     onClick={() => handleActionClick(course.id)}
+                    disabled={!course.login_true}
                   >
                     A
                   </Button>
