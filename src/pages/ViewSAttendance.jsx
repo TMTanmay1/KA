@@ -212,6 +212,7 @@ const ViewSAttendance = () => {
                 <TableCell align='center'>PunchOut</TableCell>
                 <TableCell align='center'>Image</TableCell>
               <TableCell align='center'>Location</TableCell>
+              <TableCell align='center'>Date</TableCell>
               <TableCell align="center">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -228,7 +229,7 @@ const ViewSAttendance = () => {
           <TableCell align="center">
                 <span
                   style={{ color: 'blue', cursor: 'pointer', textDecoration: 'underline' }}
-                  onClick={() => handleImageClick(course.staff.staff_image)}
+                  onClick={() => handleImageClick(course.image)}
                 >
                   View
                 </span>
@@ -238,6 +239,8 @@ const ViewSAttendance = () => {
                       <VisibilityIcon color="secondary" />
             </IconButton>
           </TableCell>
+
+          <TableCell align='center'>{course.date}</TableCell>
 
           <TableCell align="center">
                 {course.login_time && (
