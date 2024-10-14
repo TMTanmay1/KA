@@ -202,7 +202,83 @@ const ViewSAttendance = () => {
       {/* <Typography variant="subtitle1" gutterBottom>
         Total Staff: {filteredCourses.length}
       </Typography> */}
-      <TableContainer component={Paper}>
+
+<TableContainer component={Paper}>
+  <Table>
+    <TableHead>
+      <TableRow>
+        <TableCell align='center'>Name</TableCell>
+        <TableCell align='center'>Mobile No</TableCell>
+        <TableCell align='center'>PunchIn</TableCell>
+        <TableCell align='center'>PunchOut</TableCell>
+        <TableCell align='center'>Image</TableCell>
+        <TableCell align='center'>Location</TableCell>
+        <TableCell align='center'>Date</TableCell>
+        <TableCell align='center'>Actions</TableCell>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {filteredCourses.length > 0 ? (
+        filteredCourses
+          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+          .map((course) => {
+            const rowStyle = {
+              color: course.login_time ? 'green' : course.logout_time && course.logout_time !== "False" ? 'red' : 'inherit',
+            };
+
+            return (
+              <TableRow key={course.id} style={rowStyle}>
+                <TableCell align='center'>{course.staff.staff_name}</TableCell>
+                <TableCell align='center'>{course.staff.mobile_no}</TableCell>
+                <TableCell align='center'>{course.login_time ? course.login_time : "N/A"}</TableCell>
+                <TableCell align='center'>{course.logout_time && course.logout_time !== "False" ? course.logout_time : "N/A"}</TableCell>
+                <TableCell align="center">
+                  <span
+                    style={{ color: 'blue', cursor: 'pointer', textDecoration: 'underline' }}
+                    onClick={() => handleImageClick(course.image)}
+                  >
+                    View
+                  </span>
+                </TableCell>
+                <TableCell align='center'>
+                  <IconButton onClick={() => openMap(course.lat, course.longt)}>
+                    <VisibilityIcon color="secondary" />
+                  </IconButton>
+                </TableCell>
+                <TableCell align='center'>{course.date}</TableCell>
+                <TableCell align='center'>
+                  {course.login_time && (
+                    <Button
+                      variant="contained"
+                      style={{
+                        backgroundColor: 'red',
+                        color: 'white',
+                        fontWeight: 'bold',
+                        borderRadius: '5px',
+                      }}
+                      onClick={() => handleActionClick(course.id)}
+                      disabled={!course.login_true}
+                    >
+                      A
+                    </Button>
+                  )}
+                </TableCell>
+              </TableRow>
+            );
+          })
+      ) : (
+        <TableRow>
+          <TableCell colSpan={8} align='center'>
+            No Staff found.
+          </TableCell>
+        </TableRow>
+      )}
+    </TableBody>
+  </Table>
+</TableContainer>
+
+
+      {/* <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
@@ -271,7 +347,7 @@ const ViewSAttendance = () => {
 </TableBody>
 
         </Table>
-      </TableContainer>
+      </TableContainer> */}
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
