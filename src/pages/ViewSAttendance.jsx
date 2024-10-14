@@ -222,17 +222,15 @@ const ViewSAttendance = () => {
         filteredCourses
           .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
           .map((course) => {
-            const rowStyle = {
-              color: course.login_time ? 'green' : course.logout_time && course.logout_time !== "False" ? 'red' : 'inherit',
-            };
+            const textColor = course.login_time ? 'green' : (course.logout_time && course.logout_time !== "False") ? 'red' : 'inherit';
 
             return (
-              <TableRow key={course.id} style={rowStyle}>
-                <TableCell align='center'>{course.staff.staff_name}</TableCell>
-                <TableCell align='center'>{course.staff.mobile_no}</TableCell>
-                <TableCell align='center'>{course.login_time ? course.login_time : "N/A"}</TableCell>
-                <TableCell align='center'>{course.logout_time && course.logout_time !== "False" ? course.logout_time : "N/A"}</TableCell>
-                <TableCell align="center">
+              <TableRow key={course.id}>
+                <TableCell align='center' style={{ color: textColor }}>{course.staff.staff_name}</TableCell>
+                <TableCell align='center' style={{ color: textColor }}>{course.staff.mobile_no}</TableCell>
+                <TableCell align='center' style={{ color: textColor }}>{course.login_time ? course.login_time : "N/A"}</TableCell>
+                <TableCell align='center' style={{ color: textColor }}>{course.logout_time && course.logout_time !== "False" ? course.logout_time : "N/A"}</TableCell>
+                <TableCell align='center' style={{ color: textColor }}>
                   <span
                     style={{ color: 'blue', cursor: 'pointer', textDecoration: 'underline' }}
                     onClick={() => handleImageClick(course.image)}
@@ -240,13 +238,13 @@ const ViewSAttendance = () => {
                     View
                   </span>
                 </TableCell>
-                <TableCell align='center'>
+                <TableCell align='center' style={{ color: textColor }}>
                   <IconButton onClick={() => openMap(course.lat, course.longt)}>
                     <VisibilityIcon color="secondary" />
                   </IconButton>
                 </TableCell>
-                <TableCell align='center'>{course.date}</TableCell>
-                <TableCell align='center'>
+                <TableCell align='center' style={{ color: textColor }}>{course.date}</TableCell>
+                <TableCell align='center' style={{ color: textColor }}>
                   {course.login_time && (
                     <Button
                       variant="contained"
@@ -276,6 +274,7 @@ const ViewSAttendance = () => {
     </TableBody>
   </Table>
 </TableContainer>
+
 
 
       {/* <TableContainer component={Paper}>
