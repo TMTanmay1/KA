@@ -199,9 +199,9 @@ const ViewSAttendance = () => {
           ),
         }}
       />
-      <Typography variant="subtitle1" gutterBottom>
+      {/* <Typography variant="subtitle1" gutterBottom>
         Total Staff: {filteredCourses.length}
-      </Typography>
+      </Typography> */}
       <TableContainer component={Paper}>
         <Table>
           <TableHead>

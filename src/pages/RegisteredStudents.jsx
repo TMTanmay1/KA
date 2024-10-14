@@ -191,6 +191,7 @@ const RegisteredStudents = () => {
         <Table stickyHeader>
           <TableHead>
             <TableRow>
+              <TableCell align='center'>ID</TableCell>
               <TableCell align='center'>Name</TableCell>
               <TableCell align='center'>Batch</TableCell>
               <TableCell align='center'>Course</TableCell>
@@ -204,6 +205,7 @@ const RegisteredStudents = () => {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((student) => (
                 <TableRow key={student.id}>
+                  <TableCell align='center'>{student.reg_no}</TableCell>
                   <TableCell align='center'>{student.name}</TableCell>
                   {/* <TableCell align='center'>{student.BATCH.BATCH_name}</TableCell> */}
                   <TableCell align='center'>{student.BATCH.BATCH_name ? student.BATCH.BATCH_name : 'Batch not registered'}</TableCell>

@@ -381,6 +381,7 @@ const Staff = () => {
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell align='center'>ID</TableCell>
               <TableCell align='center'>Name</TableCell>
               <TableCell align='center'>Mobile No</TableCell>
               <TableCell align='center'>Email</TableCell>
@@ -394,6 +395,7 @@ const Staff = () => {
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
       .map((course) => (
         <TableRow key={course.id}>
+          <TableCell align='center'>{course.staff_unique_ids}</TableCell>
           <TableCell align='center'>{course.staff_name}</TableCell>
           <TableCell align='center'>{course.mobile_no}</TableCell>
           <TableCell align='center'>{course.email}</TableCell>
