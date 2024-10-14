@@ -155,7 +155,7 @@ const AllStudents = () => {
 </TableCell>
 
                     <TableCell align="center">{
-                      student.COURSE.course_name ? student.COURSE.course_name : "Course not registered"
+                      student.COURSE.COURSE_name ? student.COURSE.COURSE_name : "Course not registered"
                       }</TableCell>
                     <TableCell align="center">{student.gender}</TableCell>
                     <TableCell align="center">{student.mobile_no}</TableCell>
