@@ -54,19 +54,42 @@ const ViewProfile = () => {
   const batches = Array.isArray(BATCH) ? BATCH : [BATCH];
 
   // Function to download the profile as a PDF
+  // const downloadPDF = () => {
+  //   const profileContent = document.getElementById("profile-content");
+  //   html2canvas(profileContent, { scale: 2 }).then((canvas) => {
+  //     const imgData = canvas.toDataURL("image/png");
+  //     const pdf = new jsPDF({
+  //       orientation: "landscape",
+  //       unit: "pt",
+  //       format: "a4",
+  //     });
+  //     const pdfWidth = pdf.internal.pageSize.getWidth();
+  //     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+  //     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+  //     pdf.save(`${studentData.name} Profile.pdf`);
+  //   });
+  // };
+
   const downloadPDF = () => {
     const profileContent = document.getElementById("profile-content");
-    html2canvas(profileContent, { scale: 2 }).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "pt",
-        format: "a4",
-      });
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`${studentData.name} Profile.pdf`);
+
+    // Ensure the fonts are fully loaded before capturing the content
+    document.fonts.ready.then(() => {
+      const avatarImage = document.querySelector("img[src*='student_photo']");
+      avatarImage.onload = () => {
+        html2canvas(profileContent, { scale: 3 }).then((canvas) => {
+          const imgData = canvas.toDataURL("image/png");
+          const pdf = new jsPDF({
+            orientation: "landscape",
+            unit: "pt",
+            format: "a4",
+          });
+          const pdfWidth = pdf.internal.pageSize.getWidth();
+          const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+          pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+          pdf.save(`${studentData.name} Profile.pdf`);
+        });
+      };
     });
   };
 
