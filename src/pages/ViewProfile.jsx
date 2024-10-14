@@ -55,30 +55,26 @@ const ViewProfile = () => {
 
   // Function to download the profile as a PDF
   const downloadPDF = () => {
-    const profileContent = document.getElementById("pdf-content");
-
-    // Ensure the fonts are fully loaded before capturing the content
-    document.fonts.ready.then(() => {
-      html2canvas(profileContent, { scale: 3 }).then((canvas) => {
-        const imgData = canvas.toDataURL("image/png");
-        const pdf = new jsPDF({
-          orientation: "landscape",
-          unit: "pt",
-          format: "a4",
-        });
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-        pdf.save(`${studentData.name} Profile.pdf`);
+    const profileContent = document.getElementById("profile-content");
+    html2canvas(profileContent, { scale: 2 }).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "pt",
+        format: "a4",
       });
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`${studentData.name} Profile.pdf`);
     });
   };
 
   return (
     <Box sx={{ flexGrow: 1, p: 3, backgroundColor: "#f5f5f5", minHeight: "100vh" }}>
       <Card sx={{ maxWidth: 900, mx: "auto", p: 3, borderRadius: 3 }}>
-        <Box id="pdf-content" sx={{ display: 'none' }}> {/* Hidden for PDF generation */}
-          <Box sx={{ textAlign: 'center', mb: 3 }}>
+        <Box id="profile-content"> {/* The content to capture for the PDF */}
+          <Box sx={{ display: "flex", justifyContent: "center", mb: 3 }}>
             {/* Profile Photo */}
             <Avatar
               src={`https://crpch.in${student_photo}`}
@@ -95,26 +91,41 @@ const ViewProfile = () => {
             Student Profile
           </Typography>
 
-          <Grid container spacing={3} sx={{ mb: 2 }}>
-            <Grid item xs={12}>
-              <Card sx={{ mb: 2, padding: 2, boxShadow: 2 }}>
+          <Grid container spacing={3}>
+            {/* Basic Details */}
+            <Grid item xs={12} sm={6}>
+              <CardContent>
                 <Typography variant="h6" color="textSecondary">
                   Basic Details
                 </Typography>
-                <Typography variant="body1"><strong>Name:</strong> {name}</Typography>
-                <Typography variant="body1"><strong>Email:</strong> {email || "N/A"}</Typography>
-                <Typography variant="body1"><strong>Contact:</strong> {mobile_no}</Typography>
-                <Typography variant="body1"><strong>Address:</strong> {address}</Typography>
-                <Typography variant="body1"><strong>Date of Birth:</strong> {dob}</Typography>
-                <Typography variant="body1"><strong>Gender:</strong> {gender}</Typography>
-                <Typography variant="body1"><strong>Password:</strong> {password}</Typography>
-              </Card>
-            </Grid>
-          </Grid>
+                <Typography variant="body1" sx={{ mt: 2 }}>
+                  <strong>Name:</strong> {name}
+                </Typography>
+                <Typography variant="body1" sx={{ mt: 1 }}>
+                  <strong>Email:</strong> {email || "N/A"}
+                </Typography>
+                <Typography variant="body1" sx={{ mt: 1 }}>
+                  <strong>Contact:</strong> {mobile_no}
+                </Typography>
+                <Typography variant="body1" sx={{ mt: 1 }}>
+                  <strong>Address:</strong> {address}
+                </Typography>
+                <Typography variant="body1" sx={{ mt: 1 }}>
+                  <strong>Date of Birth:</strong> {dob}
+                </Typography>
+                <Typography variant="body1" sx={{ mt: 1 }}>
+                  <strong>Gender:</strong> {gender}
+                </Typography>
+                <Typography variant="body1" sx={{ mt: 1 }}>
+                  <strong>Password:</strong> {password}
+                </Typography>
 
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Card sx={{ padding: 2, boxShadow: 2 }}>
+              </CardContent>
+            </Grid>
+
+            {/* Batch and Course Details */}
+            <Grid item xs={12} sm={6}>
+              <CardContent>
                 <Typography variant="h6" color="textSecondary">
                   Batch & Course Details
                 </Typography>
@@ -144,7 +155,7 @@ const ViewProfile = () => {
                 <Typography variant="body1" sx={{ mt: 1 }}>
                   <strong>Overall End Date:</strong> {end_date}
                 </Typography>
-              </Card>
+              </CardContent>
             </Grid>
           </Grid>
         </Box>
