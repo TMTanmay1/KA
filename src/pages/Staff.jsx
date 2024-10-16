@@ -158,6 +158,7 @@ const AddStaffModal = ({ open, onClose, onSubmit}) => {
             label="Designation"
             value={designations}
             onChange={(e) => setDesignations(e.target.value)}
+            required
             sx={{ mb: 2 }}
           />
 
@@ -168,7 +169,8 @@ const AddStaffModal = ({ open, onClose, onSubmit}) => {
             label="Staff Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            sx={{ mb: 2 }}
+            required
+            sx={{ mb: 1 }}
           />
 
           {/* Course Description */}
@@ -178,9 +180,10 @@ const AddStaffModal = ({ open, onClose, onSubmit}) => {
             label="Staff Address"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            required
             multiline
-            rows={3}
-            sx={{ mb: 2 }}
+            rows={2}
+            sx={{ mb: 1 }}
           />
 
           {/* Upload Image */}
@@ -302,6 +305,7 @@ const Staff = () => {
             password : course.password ,
             address: course.address,
             staff_image: course.staff_image,
+            designation: course.designation,
         },
         {
           headers: {

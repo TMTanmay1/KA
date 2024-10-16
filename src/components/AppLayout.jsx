@@ -9,6 +9,8 @@ import Cookies from 'js-cookie';
 const AppLayout = () => {
   const navigate = useNavigate();
 
+  const user = localStorage.getItem('user');
+
   const handleLogout = () => {
     localStorage.removeItem('authToken');
     Cookies.remove('Login');
@@ -37,7 +39,7 @@ const AppLayout = () => {
             height: '64px', // Match the height of the Sidebar
           }}
         >
-          <Typography variant="h6">Krishna Academy</Typography>
+          <Typography variant="h5">Welcome, {user}</Typography>
 
           <Button type="primary" style={{ marginLeft: 'auto', backgroundColor:'red' }}
             onClick={handleLogout}
