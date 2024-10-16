@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect , useRef} from 'react';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import axios from 'axios';
 import {
+  Avatar ,
+  Tooltip,
   Container,
   Grid,
   Button,
@@ -26,12 +29,16 @@ import {
   InputAdornment, 
   Snackbar,
   Alert,
+  CircularProgress
 } from '@mui/material';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SearchIcon from '@mui/icons-material/Search';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+
 
 const AddStaffModal = ({ open, onClose, onSubmit}) => {
   const [staffName, setStaffName] = useState('');
@@ -355,6 +362,62 @@ const Staff = () => {
     course.staff_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const idCardRef = useRef(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [studentData, setStudentData] = useState([]);
+  const downloadIDCardPDF = async () => {
+    if (!idCardRef.current) {
+      console.error("ID Card element not found");
+      return;
+    }
+
+    setIsDownloading(true);
+
+    try {
+      const canvas = await html2canvas(idCardRef.current);
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = 180; // adjusted for the new card size
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      const x = (pdfWidth - imgWidth) / 2;
+      const y = (pdfHeight - imgHeight) / 2;
+
+      pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
+      pdf.save(`${staff_name}_ID_Card.pdf`);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      // You could add a user-facing error message here
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  const handleGetIDCard = async (staffId) => {
+    try {
+      const response = await axios.get(`https://crpch.in/api/ka/staff/profile/?id=${staffId}`, {
+        headers: {
+          Authorization: `Token ${Token}`,
+        },
+      });
+
+ 
+      setStudentData(response.data.data);
+      downloadIDCardPDF();
+    }
+    catch (error) {
+      console.error('Error fetching ID card data:', error);
+    }
+  }
+
+  const {
+    staff_name, email, mobile_no, address, staff_image, staff_unique_ids, 
+    BATCH, COURSE, start_date, end_date, gender, dob , password
+  } = studentData;
+
   return (
     <Container maxWidth="lg">
       <Box my={4}>
@@ -423,6 +486,12 @@ const Staff = () => {
             <IconButton >
               <DeleteIcon color="secondary" />
             </IconButton>
+
+            <Tooltip title="ID Card" arrow>
+            <IconButton onClick={() => handleGetIDCard(course.id)}>
+              <VisibilityIcon color="primary" />
+            </IconButton>
+          </Tooltip>
           </TableCell>
         </TableRow>
       ))
@@ -446,6 +515,89 @@ const Staff = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+
+           {/* Updated ID Card Design */}
+<Box 
+  ref={idCardRef} 
+  sx={{ 
+    position: "absolute",
+    left: "-9999px",
+    top: 0,
+    width: "600px",
+    height: "350px",
+    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+  }}
+>
+  <Box
+    sx={{
+      width: "100%",
+      height: "100%",
+      background: "linear-gradient(135deg, #FFD700, #ffffff)", // Updated gradient
+      color: "#000", // Changed text color to black
+      borderRadius: 4,
+      overflow: "hidden",
+      boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+      display: "flex",
+      flexDirection: "column",
+    }}
+  >
+    {/* Header */}
+    <Box sx={{ 
+      p: 2, 
+      background: "rgba(0, 0, 0, 0.1)", 
+      display: "flex", 
+      justifyContent: "space-between", 
+      alignItems: "center"
+    }}>
+      <Typography variant="h5" sx={{ fontWeight: "bold", color: "#000" }}>Krishna Academy</Typography> {/* Changed text color */}
+      <Typography variant="body2" sx={{ color: "#000" }}>Staff ID Card</Typography> {/* Changed text color */}
+    </Box>
+
+    {/* Content */}
+    <Box sx={{ display: "flex", p: 3, flexGrow: 1 }}>
+      {/* Left side - Photo */}
+      <Box sx={{ mr: 3 }}>
+        <Avatar
+          src={`https://crpch.in${staff_image}`}
+          sx={{ width: 120, height: 120, border: "4px solid #fff" }}
+        />
+      </Box>
+
+      {/* Right side - Details */}
+      <Box sx={{ flexGrow: 1 }}>
+        <Typography variant="h4" sx={{ mb: 2, fontWeight: "bold", color: "#000" }}>{staff_name}</Typography> {/* Changed text color */}
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <Typography variant="body2" sx={{ color: "#000" }}>Reg No:</Typography> {/* Changed text color */}
+            <Typography variant="body1" sx={{ fontWeight: "bold", color: "#000" }}>{staff_unique_ids}</Typography> {/* Changed text color */}
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="body2" sx={{ color: "#000" }}>Contact No:</Typography> {/* Changed text color */}
+            <Typography variant="body1" sx={{ fontWeight: "bold", color: "#000" }}>{mobile_no}</Typography> {/* Changed text color */}
+          </Grid>
+  
+          <Grid item xs={6}>
+            <Typography variant="body2" sx={{ color: "#000" }}>Address:</Typography> {/* Changed text color */}
+            <Typography variant="body1" sx={{ fontWeight: "bold", color: "#000" }}>{address}</Typography> {/* Changed text color */}
+          </Grid>
+        </Grid>
+      </Box>
+    </Box>
+
+    {/* Footer */}
+    <Box sx={{ 
+      mt: "auto", 
+      p: 1, 
+      background: "rgba(0, 0, 0, 0.1)", 
+      textAlign: "center"
+    }}>
+      <Typography variant="body2" sx={{ color: "#000" }}>
+        This card is the property of Krishna Academy.
+      </Typography> {/* Changed text color */}
+    </Box>
+  </Box>
+</Box>
+
       <AddStaffModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
