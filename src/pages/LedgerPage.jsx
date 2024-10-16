@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Divider, Avatar, Grid, Paper, Card, CardContent } from '@mui/material';
+import { Box, Typography, Divider, Avatar, Grid, Paper, Card, CardContent, Button , Tooltip} from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import DownloadIcon from '@mui/icons-material/Download';
 
 const LedgerPage = () => {
   const [student, setStudent] = useState(null);
@@ -35,6 +38,71 @@ const LedgerPage = () => {
   if (!student) {
     return <Typography>Loading...</Typography>;
   }
+
+  const downloadPDF = () => {
+    const doc = new jsPDF();
+  
+    // Title
+    doc.setFontSize(20);
+    const title = 'Student Ledger';
+    const titleWidth = doc.getTextWidth(title);
+    const titleX = (doc.internal.pageSize.width - titleWidth) / 2; // Center the title
+    doc.text(titleX, 22, title);
+    
+    // Underline the title
+    const titleY = 22; // Y position of the title
+    doc.setLineWidth(0.5);
+    doc.line(titleX, titleY + 2, titleX + titleWidth, titleY + 2); // Underline
+  
+    // Student details
+    doc.setFontSize(12);
+    const detailsX = 14; // Starting X position for details
+    const detailsYStart = 40; // Starting Y position for details
+  
+    // Prepare student details in two columns
+    const details = [
+      `Name: ${student.name}`,
+      `Batch: ${student.BATCH.BATCH_name}`,
+      `Course: ${student.COURSE.COURSE_name}`,
+      `Mobile: ${student.mobile_no}`,
+      `DOB: ${student.dob}`,
+    ];
+  
+    const halfPageWidth = doc.internal.pageSize.width / 2;
+  
+    // Add details to the PDF
+    details.forEach((detail, index) => {
+      const isEven = index % 2 === 0;
+      const xPos = isEven ? detailsX : halfPageWidth + 10; // Add some margin to the second column
+      const yPos = detailsYStart + Math.floor(index / 2) * 10; // Increment Y position for every 2 rows
+      doc.text(xPos, yPos, detail);
+    });
+  
+    // Add a space before the table
+    doc.text('', 14, detailsYStart + 20); // Adjust for spacing before table
+  
+    // Add ledger table
+    const tableData = ledger.map(entry => [
+      new Date(entry.payment_date).toLocaleDateString(),
+      entry.payment_amount,
+      entry.due_amount,
+    ]);
+    
+    const tableColumns = ['Transaction Date', 'Amount', 'Due Amount'];
+  
+    doc.autoTable({
+      head: [tableColumns],
+      body: tableData,
+      startY: detailsYStart + 30, // Starting position of the table
+      margin: { horizontal: 10 },
+      theme: 'grid',
+    });
+  
+    // Save the PDF
+    doc.save(`${student.name} Ledger.pdf`);
+  };
+  
+
   return (
     <Box sx={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
       
@@ -52,10 +120,26 @@ const LedgerPage = () => {
           <Typography variant="subtitle1" color="textSecondary">Mobile: {student.mobile_no}</Typography>
           <Typography variant="subtitle1" color="textSecondary">DOB: {student.dob}</Typography>
         </Box>
-        {/* <Box sx={{ marginLeft: 'auto', textAlign: 'right' }}>
-          <Typography variant="h3" sx={{ color: '#3f51b5', fontWeight: 'bold' }}>{student.points}</Typography>
-          <Typography variant="body2" color="textSecondary">Total Points</Typography>
-        </Box> */}
+        <Box sx={{ marginLeft: 'auto', textAlign: 'right' }}>
+        <Tooltip title="Download Ledger" arrow>
+            <Button 
+              variant="contained" 
+              onClick={downloadPDF} 
+              sx={{
+                backgroundColor: '#FF5722', // Custom color
+                color: 'white', // Text color
+                borderRadius: '50%', // Make the button round
+                minWidth: '56px', // Minimum width to accommodate the icon
+                minHeight: '56px', // Minimum height to accommodate the icon
+                '&:hover': {
+                  backgroundColor: '#E64A19', // Darker shade on hover
+                }
+              }}
+            >
+              <DownloadIcon />
+            </Button>
+          </Tooltip>
+        </Box>
       </Paper>
 
       {/* Divider */}

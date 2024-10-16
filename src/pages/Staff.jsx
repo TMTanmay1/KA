@@ -41,6 +41,7 @@ const AddStaffModal = ({ open, onClose, onSubmit}) => {
   const [description, setDescription] = useState('');
   const [image, setImage] = useState(null);
   const [password, setPassword] = useState('');
+  const [designations, setDesignations] = useState('');
 
   const handleSubmit = () => {
     if (staffName) {
@@ -52,6 +53,7 @@ const AddStaffModal = ({ open, onClose, onSubmit}) => {
         address: description,
         staff_image: image,
         password: password,
+        designation: designations,
       });
       // Reset all fields
       setStaffName('');
@@ -61,6 +63,7 @@ const AddStaffModal = ({ open, onClose, onSubmit}) => {
       setDescription('');
       setImage(null);
         setPassword('');
+        setDesignations('');
       onClose();
     }
   };
@@ -147,6 +150,17 @@ const AddStaffModal = ({ open, onClose, onSubmit}) => {
               />
             </Grid>
           </Grid>
+
+          {/* Designation */}
+          <TextField
+            fullWidth
+            variant="outlined"
+            label="Designation"
+            value={designations}
+            onChange={(e) => setDesignations(e.target.value)}
+            sx={{ mb: 2 }}
+          />
+
 
           <TextField
             fullWidth
