@@ -19,6 +19,9 @@ const ViewProfile = () => {
   const idCardRef = useRef(null);
   const [isDownloading, setIsDownloading] = useState(false);
 
+  const profileCardRef = useRef(null);
+  const [isDownloadingProfile, setIsDownloadingProfile] = useState(false);
+
   // Fetch student profile data using API call
   useEffect(() => {
     const fetchStudentProfile = async () => {
@@ -57,21 +60,41 @@ const ViewProfile = () => {
   const batches = Array.isArray(BATCH) ? BATCH : [BATCH];
 
   // Function to download the profile as a PDF
-  const downloadPDF = () => {
-    const profileContent = document.getElementById("profile-content");
-    html2canvas(profileContent, { scale: 2 }).then((canvas) => {
+  // const downloadPDF = () => {
+  //   const profileContent = document.getElementById("profile-content");
+  //   html2canvas(profileContent, { scale: 2 }).then((canvas) => {
+  //     const imgData = canvas.toDataURL("image/png");
+  //     const pdf = new jsPDF({
+  //       orientation: "landscape",
+  //       unit: "pt",
+  //       format: "a4",
+  //     });
+  //     const pdfWidth = pdf.internal.pageSize.getWidth();
+  //     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+  //     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+  //     pdf.save(`${studentData.name} Profile.pdf`);
+  //   });
+  // };
+
+  const downloadProfilePDF = async () => {
+    if (!profileCardRef.current) return;
+    setIsDownloadingProfile(true);
+    try {
+      const canvas = await html2canvas(profileCardRef.current);
       const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "pt",
-        format: "a4",
-      });
+      const pdf = new jsPDF("p", "mm", "a4");
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`${studentData.name} Profile.pdf`);
-    });
+      const imgWidth = pdfWidth - 20; // 10mm margin on each side
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
+      pdf.save(`${studentData.name}_Profile.pdf`);
+    } catch (error) {
+      console.error("Error generating Profile PDF:", error);
+    } finally {
+      setIsDownloadingProfile(false);
+    }
   };
+
 
   const downloadIDCardPDF = async () => {
     if (!idCardRef.current) {
@@ -200,7 +223,7 @@ const ViewProfile = () => {
 
         {/* Action Buttons */}
         <Grid container spacing={2} sx={{ mt: 4 }} justifyContent="center">
-          <Grid item>
+          {/* <Grid item>
             <Button
               variant="contained"
               color="primary"
@@ -214,6 +237,24 @@ const ViewProfile = () => {
               }}
             >
               Download Profile
+            </Button>
+          </Grid> */}
+
+          <Grid item>
+            <Button
+              variant="contained"
+              color="secondary"
+              startIcon={isDownloadingProfile ? <CircularProgress size={20} color="inherit" /> : <FileDownloadIcon />}
+              onClick={downloadProfilePDF}
+              disabled={isDownloadingProfile}
+              sx={{
+                px: 4,
+                py: 1,
+                backgroundColor: "#9c27b0",
+                "&:hover": { backgroundColor: "#7b1fa2" },
+              }}
+            >
+              {isDownloadingProfile ? "Downloading..." : "Download Profile"}
             </Button>
           </Grid>
 
@@ -338,6 +379,108 @@ const ViewProfile = () => {
           </Box>
         </Box>
       </Box>
+
+
+       {/* Hidden Profile Card for PDF */}
+<Box 
+  ref={profileCardRef} 
+  sx={{ 
+    position: "absolute",
+    left: "-9999px",
+    top: 0,
+    width: "800px",
+    height: "1123px", // Standard A4 page height
+    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    backgroundColor: "#fff",
+    padding: "40px",
+    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between", // To push the last element to the bottom
+  }}
+>
+  {/* Header */}
+  <Box>
+    <Typography variant="h4" align="center" sx={{ fontWeight: 'bold', mb: 4 }}>
+      Student Profile
+    </Typography>
+    
+    {/* Profile Section */}
+    <Grid container spacing={3}>
+      <Grid item xs={4}>
+        <Avatar
+          src={`https://crpch.in${studentData.student_photo}`}
+          
+          sx={{ width: 150, height: 150, margin: "0 auto", boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)" }}
+        />
+      </Grid>
+      <Grid item xs={8}>
+        <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 1 }}>{studentData.name}</Typography>
+        <Typography>Reg No: {studentData.reg_no}</Typography>
+        <Typography>Course: {studentData.COURSE.COURSE_name}</Typography>
+        <Typography>Batch: {studentData.BATCH.BATCH_name}</Typography>
+      </Grid>
+    </Grid>
+  </Box>
+
+  {/* Personal and Contact Information */}
+  <Grid container spacing={4} sx={{ mt: 4 }}>
+    <Grid item xs={6}>
+      <Typography variant="h6" sx={{ fontWeight: 'bold', borderBottom: '2px solid #ccc', pb: 1, mb: 2 }}>
+        Personal Information
+      </Typography>
+      <Typography>Gender: {studentData.gender}</Typography>
+      <Typography>Date of Birth: {studentData.dob}</Typography>
+      <Typography>Father's Name: {studentData.father_name}</Typography>
+      <Typography>Mother's Name: {studentData.mother_name}</Typography>
+      <Typography>Marital Status: {studentData.marital_status}</Typography>
+      <Typography>Religion: {studentData.religion}</Typography>
+      <Typography>Category: {studentData.category}</Typography>
+      <Typography>Qualification: {studentData.qualification}</Typography>
+    </Grid>
+    <Grid item xs={6}>
+      <Typography variant="h6" sx={{ fontWeight: 'bold', borderBottom: '2px solid #ccc', pb: 1, mb: 2 }}>
+        Contact Information
+      </Typography>
+      <Typography>Mobile: {studentData.mobile_no}</Typography>
+      <Typography>Address: {studentData.address}</Typography>
+      <Typography>Village: {studentData.village}</Typography>
+      <Typography>City: {studentData.city}</Typography>
+      <Typography>District: {studentData.district}</Typography>
+      <Typography>State: {studentData.state}</Typography>
+      <Typography>Pincode: {studentData.pincode}</Typography>
+    </Grid>
+  </Grid>
+
+  {/* Course Details */}
+  <Grid container sx={{ mt: 4 }}>
+    <Grid item xs={12}>
+      <Typography variant="h6" sx={{ fontWeight: 'bold', borderBottom: '2px solid #ccc', pb: 1, mb: 2 }}>
+        Course Details
+      </Typography>
+      <Typography>Course: {studentData.COURSE.COURSE_name}</Typography>
+      <Typography>Description: {studentData.COURSE.COURSE_description}</Typography>
+      <Typography>Duration: {studentData.COURSE_duration} months</Typography>
+      <Typography>Fee: ₹{studentData.COURSE.COURSE_fee}</Typography>
+      <Typography>Start Date: {studentData.start_date}</Typography>
+      <Typography>End Date: {studentData.end_date}</Typography>
+      <Typography>Total Paid Amount: ₹{studentData.total_paid_amount}</Typography>
+    </Grid>
+  </Grid>
+
+  {/* Footer Disclaimer */}
+  <Box sx={{ 
+    mt: 'auto', 
+    borderTop: "1px solid #ccc", 
+    paddingTop: 2, 
+    textAlign: "center" 
+  }}>
+    <Typography variant="body2" sx={{ color: "#666" }}>
+      This document is computer-generated and does not require a signature.
+    </Typography>
+  </Box>
+</Box>
+
     </Box>
   );
 };

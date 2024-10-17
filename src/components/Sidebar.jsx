@@ -9,6 +9,7 @@ import Group from '@mui/icons-material/Group';
 import TaskIcon from '@mui/icons-material/Task';
 import SettingsAccessibilityIcon from '@mui/icons-material/SettingsAccessibility';
 import FlakyIcon from '@mui/icons-material/Flaky';
+import AddAlertIcon from '@mui/icons-material/AddAlert';
 
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
@@ -590,6 +591,25 @@ const Sidebar = () => {
 
             </List>
           </Collapse>
+
+          <ListItem
+            button
+            component={Link} to="/dashboard/notify"
+            sx={{
+              my: 1.5,
+              borderRadius: '8px',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.6)',
+                backdropFilter: 'blur(10px)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+              },
+            }}
+          >
+            <ListItemIcon>
+              <AddAlertIcon />
+            </ListItemIcon>
+            {open && <ListItemText primary="Notify" />}
+          </ListItem>
         </List>
       </Drawer>
     </>
