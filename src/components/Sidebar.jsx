@@ -10,6 +10,7 @@ import TaskIcon from '@mui/icons-material/Task';
 import SettingsAccessibilityIcon from '@mui/icons-material/SettingsAccessibility';
 import FlakyIcon from '@mui/icons-material/Flaky';
 import AddAlertIcon from '@mui/icons-material/AddAlert';
+import HowToRegIcon from '@mui/icons-material/HowToReg';
 
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
@@ -19,6 +20,7 @@ const Sidebar = () => {
   const [assetOpen, setAssetOpen] = useState(false)
   const [studyMaterialOpen, setStudyMaterialOpen] = useState(false)
   const [staffManagementOpen, setStaffManagementOpen] = useState(false)
+  const [attendanceOpen, setAttendanceOpen] = useState(false)
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -46,6 +48,10 @@ const Sidebar = () => {
 
   const handleStaffManagementClick = () => {
     setStaffManagementOpen(!staffManagementOpen);
+  };
+
+  const handleAttendanceClick = () => {
+    setAttendanceOpen(!attendanceOpen);
   };
 
   useEffect(() => {
@@ -310,6 +316,26 @@ const Sidebar = () => {
                 </ListItemIcon>
                 <ListItemText primary="All Students" />
               </ListItem>
+
+              <ListItem
+            button
+            component={Link} to="/dashboard/attendance"
+            sx={{
+              pl: 4,
+              backgroundColor: 'white',
+              borderRadius: '8px',
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+              my: 0.5,
+              '&:hover': {
+                backgroundColor: '#f5f5f5',
+              },
+            }}
+          >
+            <ListItemIcon>
+              <HowToRegIcon />
+            </ListItemIcon>
+            {open && <ListItemText primary="Student Attendance" />}
+          </ListItem>
             </List>
           </Collapse>
 
