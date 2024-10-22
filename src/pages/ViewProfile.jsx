@@ -10,6 +10,7 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
 const ViewProfile = () => {
   const Token = localStorage.getItem('authToken');
+  const user = localStorage.getItem('user');
   const location = useLocation();
   const navigate = useNavigate();
   const sData = location.state?.student;
@@ -80,7 +81,7 @@ const ViewProfile = () => {
     if (!profileCardRef.current) return;
     setIsDownloadingProfile(true);
     try {
-      const canvas = await html2canvas(profileCardRef.current);
+      const canvas = await html2canvas(profileCardRef.current, { useCORS: true });
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "mm", "a4");
       const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -105,7 +106,7 @@ const ViewProfile = () => {
     setIsDownloading(true);
 
     try {
-      const canvas = await html2canvas(idCardRef.current);
+      const canvas = await html2canvas(idCardRef.current, { useCORS: true });
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "mm", "a4");
 
@@ -297,88 +298,89 @@ const ViewProfile = () => {
 
        {/* Updated ID Card Design */}
        <Box 
-        ref={idCardRef} 
-        sx={{ 
-          position: "absolute",
-          left: "-9999px",
-          top: 0,
-          width: "600px",
-          height: "350px",
-          fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-        }}
-      >
-        <Box
-          sx={{
-            width: "100%",
-            height: "100%",
-            background: "linear-gradient(135deg, #1976d2, #FFD700)",
-            color: "#fff",
-            borderRadius: 4,
-            overflow: "hidden",
-            boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          {/* Header */}
-          <Box sx={{ 
-            p: 2, 
-            background: "rgba(0, 0, 0, 0.1)", 
-            display: "flex", 
-            justifyContent: "space-between", 
-            alignItems: "center"
-          }}>
-            <Typography variant="h5" sx={{ fontWeight: "bold" }}>Krishna Academy</Typography>
-            <Typography variant="body2">Student ID Card</Typography>
-          </Box>
+  ref={idCardRef} 
+  sx={{ 
+    position: "absolute",
+    left: "-9999px",
+    top: 0,
+    width: "350px", // Portrait width
+    height: "600px", // Portrait height
+    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+  }}
+>
+  <Box
+    sx={{
+      width: "100%",
+      height: "100%",
+      background: "linear-gradient(135deg, #1976d2, #FFD700)",
+      color: "#fff",
+      borderRadius: 4,
+      overflow: "hidden",
+      boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+      display: "flex",
+      flexDirection: "column", // Vertical alignment
+    }}
+  >
+    {/* Header */}
+    <Box sx={{ 
+      p: 2, 
+      background: "rgba(0, 0, 0, 0.1)", 
+      display: "flex", 
+      flexDirection: "column", // Stack the header items vertically
+      alignItems: "center", // Center align header content
+    }}>
+      <Typography variant="h5" sx={{ fontWeight: "bold", textAlign: "center" }}>{user}</Typography>
+      <Typography variant="body2" sx={{ textAlign: "center" }}>Student ID Card</Typography>
+    </Box>
 
-          {/* Content */}
-          <Box sx={{ display: "flex", p: 3, flexGrow: 1 }}>
-            {/* Left side - Photo */}
-            <Box sx={{ mr: 3 }}>
-              <Avatar
-                src={`https://crpch.in${student_photo}`}
-                sx={{ width: 120, height: 120, border: "4px solid #fff" }}
-              />
-            </Box>
-
-            {/* Right side - Details */}
-            <Box sx={{ flexGrow: 1 }}>
-              <Typography variant="h4" sx={{ mb: 2, fontWeight: "bold" }}>{name}</Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <Typography variant="body2">Reg No:</Typography>
-                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>{reg_no}</Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography variant="body2">Course:</Typography>
-                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>{courses[0]?.COURSE_name}</Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography variant="body2">Batch:</Typography>
-                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>{batches[0]?.BATCH_name}</Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography variant="body2">Valid Till:</Typography>
-                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>{end_date}</Typography>
-                </Grid>
-              </Grid>
-            </Box>
-          </Box>
-
-          {/* Footer */}
-          <Box sx={{ 
-            mt: "auto", 
-            p: 2, 
-            background: "rgba(0, 0, 0, 0.1)", 
-            textAlign: "center"
-          }}>
-            <Typography variant="body2">
-              This card is the property of Krishna Academy.
-            </Typography>
-          </Box>
-        </Box>
+    {/* Content */}
+    <Box sx={{ display: "flex", flexDirection: "column", p: 2, flexGrow: 1, alignItems: "center" }}>
+      {/* Top - Photo */}
+      <Box sx={{ mb: 3 }}>
+        <Avatar
+          src={`https://crpch.in${student_photo}`}
+          sx={{ width: 120, height: 120, border: "4px solid #fff" }}
+        />
       </Box>
+
+      {/* Bottom - Details */}
+      <Box sx={{ width: "100%" }}>
+        <Typography variant="h4" sx={{ mb: 2, fontWeight: "bold", textAlign: "center" }}>{name}</Typography>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="body2" sx={{ textAlign: "center" }}>Reg No:</Typography>
+            <Typography variant="body1" sx={{ fontWeight: "bold", textAlign: "center" }}>{reg_no}</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="body2" sx={{ textAlign: "center" }}>Course:</Typography>
+            <Typography variant="body1" sx={{ fontWeight: "bold", textAlign: "center" }}>{courses[0]?.COURSE_name}</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="body2" sx={{ textAlign: "center" }}>Batch:</Typography>
+            <Typography variant="body1" sx={{ fontWeight: "bold", textAlign: "center" }}>{batches[0]?.BATCH_name}</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="body2" sx={{ textAlign: "center" }}>Valid Till:</Typography>
+            <Typography variant="body1" sx={{ fontWeight: "bold", textAlign: "center" }}>{end_date}</Typography>
+          </Grid>
+        </Grid>
+      </Box>
+    </Box>
+
+    {/* Footer */}
+    <Box sx={{ 
+      mt: "auto", 
+      p: 2, 
+      background: "rgba(0, 0, 0, 0.1)", 
+      textAlign: "center"
+    }}>
+      <Typography variant="body2">
+        This card is the property of student.
+      </Typography>
+    </Box>
+  </Box>
+</Box>
+
 
 
        {/* Hidden Profile Card for PDF */}

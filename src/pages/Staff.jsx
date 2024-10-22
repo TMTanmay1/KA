@@ -239,6 +239,7 @@ const AddStaffModal = ({ open, onClose, onSubmit}) => {
 
 const Staff = () => {
   const Token = localStorage.getItem('authToken');
+  const user = localStorage.getItem('user');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState('');
@@ -374,7 +375,7 @@ const Staff = () => {
     setIsDownloading(true);
 
     try {
-      const canvas = await html2canvas(idCardRef.current);
+      const canvas = await html2canvas(idCardRef.current, { useCORS: true });
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "mm", "a4");
 
@@ -517,14 +518,14 @@ const Staff = () => {
       />
 
            {/* Updated ID Card Design */}
-<Box 
+           <Box 
   ref={idCardRef} 
   sx={{ 
     position: "absolute",
     left: "-9999px",
     top: 0,
-    width: "600px",
-    height: "350px",
+    width: "350px", // Portrait width
+    height: "600px", // Portrait height
     fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
   }}
 >
@@ -538,7 +539,7 @@ const Staff = () => {
       overflow: "hidden",
       boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
       display: "flex",
-      flexDirection: "column",
+      flexDirection: "column", // Flex direction set for portrait
     }}
   >
     {/* Header */}
@@ -546,39 +547,51 @@ const Staff = () => {
       p: 2, 
       background: "rgba(0, 0, 0, 0.1)", 
       display: "flex", 
-      justifyContent: "space-between", 
-      alignItems: "center"
+      flexDirection: "column", // Stack the header items vertically
+      alignItems: "center", // Center align the header content
     }}>
-      <Typography variant="h5" sx={{ fontWeight: "bold", color: "#000" }}>Krishna Academy</Typography> {/* Changed text color */}
-      <Typography variant="body2" sx={{ color: "#000" }}>Staff ID Card</Typography> {/* Changed text color */}
+      <Typography variant="h5" sx={{ fontWeight: "bold", color: "#000", textAlign: "center" }}>
+        {user}
+      </Typography> {/* Changed text color */}
+      <Typography variant="body2" sx={{ color: "#000", textAlign: "center" }}>
+        Staff ID Card
+      </Typography> {/* Changed text color */}
     </Box>
 
     {/* Content */}
-    <Box sx={{ display: "flex", p: 3, flexGrow: 1 }}>
-      {/* Left side - Photo */}
-      <Box sx={{ mr: 3 }}>
+    <Box sx={{ display: "flex", flexDirection: "column", p: 2, flexGrow: 1, alignItems: "center" }}>
+      {/* Top - Photo */}
+      <Box sx={{ mb: 3 }}>
         <Avatar
           src={`https://crpch.in${staff_image}`}
           sx={{ width: 120, height: 120, border: "4px solid #fff" }}
         />
       </Box>
 
-      {/* Right side - Details */}
-      <Box sx={{ flexGrow: 1 }}>
-        <Typography variant="h4" sx={{ mb: 2, fontWeight: "bold", color: "#000" }}>{staff_name}</Typography> {/* Changed text color */}
+      {/* Bottom - Details */}
+      <Box sx={{ width: "100%" }}>
+        <Typography variant="h4" sx={{ mb: 2, fontWeight: "bold", color: "#000", textAlign: "center" }}>
+          {staff_name}
+        </Typography> {/* Changed text color */}
         <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <Typography variant="body2" sx={{ color: "#000" }}>Reg No:</Typography> {/* Changed text color */}
-            <Typography variant="body1" sx={{ fontWeight: "bold", color: "#000" }}>{staff_unique_ids}</Typography> {/* Changed text color */}
+          <Grid item xs={12}>
+            <Typography variant="body2" sx={{ color: "#000", textAlign: "center" }}>Reg No:</Typography> {/* Changed text color */}
+            <Typography variant="body1" sx={{ fontWeight: "bold", color: "#000", textAlign: "center" }}>
+              {staff_unique_ids}
+            </Typography> {/* Changed text color */}
           </Grid>
-          <Grid item xs={6}>
-            <Typography variant="body2" sx={{ color: "#000" }}>Contact No:</Typography> {/* Changed text color */}
-            <Typography variant="body1" sx={{ fontWeight: "bold", color: "#000" }}>{mobile_no}</Typography> {/* Changed text color */}
+          <Grid item xs={12}>
+            <Typography variant="body2" sx={{ color: "#000", textAlign: "center" }}>Contact No:</Typography> {/* Changed text color */}
+            <Typography variant="body1" sx={{ fontWeight: "bold", color: "#000", textAlign: "center" }}>
+              {mobile_no}
+            </Typography> {/* Changed text color */}
           </Grid>
   
-          <Grid item xs={6}>
-            <Typography variant="body2" sx={{ color: "#000" }}>Address:</Typography> {/* Changed text color */}
-            <Typography variant="body1" sx={{ fontWeight: "bold", color: "#000" }}>{address}</Typography> {/* Changed text color */}
+          <Grid item xs={12}>
+            <Typography variant="body2" sx={{ color: "#000", textAlign: "center" }}>Address:</Typography> {/* Changed text color */}
+            <Typography variant="body1" sx={{ fontWeight: "bold", color: "#000", textAlign: "center" }}>
+              {address}
+            </Typography> {/* Changed text color */}
           </Grid>
         </Grid>
       </Box>
@@ -587,16 +600,17 @@ const Staff = () => {
     {/* Footer */}
     <Box sx={{ 
       mt: "auto", 
-      p: 1, 
+      p: 2, 
       background: "rgba(0, 0, 0, 0.1)", 
       textAlign: "center"
     }}>
       <Typography variant="body2" sx={{ color: "#000" }}>
-        This card is the property of Krishna Academy.
+        This card is the property of Staff.
       </Typography> {/* Changed text color */}
     </Box>
   </Box>
 </Box>
+
 
       <AddStaffModal
         open={modalOpen}
