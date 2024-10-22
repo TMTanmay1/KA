@@ -109,7 +109,7 @@ const Login = () => {
           height: '100vh',
         }}
       >
-        <img src={logo} alt="Logo" style={{ width: '150px', marginBottom: '20px' }} />
+        {/* <img src={logo} alt="Logo" style={{ width: '150px', marginBottom: '20px' }} /> */}
         <Box
           sx={{
             width: '100%',

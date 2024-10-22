@@ -119,11 +119,11 @@ const Sidebar = () => {
           >
             <Menu />
           </IconButton>
-          <img
+          {/* <img
             src={Logo}
             alt="Logo"
             style={{ height: '40px' }}
-          />
+          /> */}
         </Box>
 
         <Toolbar />
