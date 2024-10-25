@@ -32,6 +32,8 @@ function ViewAttendance() {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
+  console.log(date)
+
   const fetchStudents = async () => {
     try {
       const response = await axios.get(`https://crpch.in/api/ka/student/search_date/?date=${date}&id=${batchId}`, {
@@ -68,7 +70,7 @@ function ViewAttendance() {
   };
 
   const filteredStudents = students.filter((student) =>
-    student.student.toLowerCase().includes(searchQuery.toLowerCase())
+    student.student.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
  
@@ -133,7 +135,7 @@ function ViewAttendance() {
             {filteredStudents.length > 0 ? (
               filteredStudents.map((student) => (
                 <TableRow key={student.id}>
-                  <TableCell align="center">{student.student}</TableCell>
+                  <TableCell align="center">{student.student.name}</TableCell>
                   <TableCell align="center">{student.attend == true ? 'Present': 'Absent'}</TableCell>
                   <TableCell align="center">
                     <EditIcon color="primary" style={{ cursor: 'pointer', marginRight: '10px' }} />
