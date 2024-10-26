@@ -26,6 +26,7 @@ import Notify from './pages/Notify.jsx';
 import Attendance from './pages/Attendance.jsx';
 import BatchAttendance from './pages/BatchAttendance.jsx';
 import ViewAttendance from './pages/ViewAttendance.jsx';
+import CreateLiscence from './pages/CreateLiscence.jsx';
 
 function App() {
   return (
@@ -58,6 +59,7 @@ function App() {
           <Route path="/dashboard/attendance" element={<Attendance />} />
           <Route path="/dashboard/batch-attendance/:batchId" element={<BatchAttendance />} />
           <Route path="/dashboard/view-attendance/:batchId" element={<ViewAttendance />} />
+          <Route path="/dashboard/create-liscence" element={<CreateLiscence />} />
         </Route>
       </Routes>
       </Router>

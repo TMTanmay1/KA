@@ -13,6 +13,7 @@ import AddAlertIcon from '@mui/icons-material/AddAlert';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 
 const Sidebar = () => {
+  const no = localStorage.getItem('no');
   const [open, setOpen] = useState(false);
   const [batchManagementOpen, setBatchManagementOpen] = useState(false);
   const [courseModuleOpen, setCourseModuleOpen] = useState(false);
@@ -636,6 +637,28 @@ const Sidebar = () => {
             </ListItemIcon>
             {open && <ListItemText primary="Notify" />}
           </ListItem>
+
+          {no === '7980591782' || no === null ? (
+  <ListItem
+    button
+    component={Link}
+    to="/dashboard/create-liscence"
+    sx={{
+      my: 1.5,
+      borderRadius: '8px',
+      '&:hover': {
+        backgroundColor: 'rgba(255, 255, 255, 0.6)',
+        backdropFilter: 'blur(10px)',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+      },
+    }}
+  >
+    <ListItemIcon>
+      <Add />
+    </ListItemIcon>
+    {open && <ListItemText primary="Create License" />}
+  </ListItem>
+) : null}
         </List>
       </Drawer>
     </>
