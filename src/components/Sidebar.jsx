@@ -11,6 +11,7 @@ import SettingsAccessibilityIcon from '@mui/icons-material/SettingsAccessibility
 import FlakyIcon from '@mui/icons-material/Flaky';
 import AddAlertIcon from '@mui/icons-material/AddAlert';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
+import QuizIcon from '@mui/icons-material/Quiz';
 
 const Sidebar = () => {
   const no = localStorage.getItem('no');
@@ -22,6 +23,7 @@ const Sidebar = () => {
   const [studyMaterialOpen, setStudyMaterialOpen] = useState(false)
   const [staffManagementOpen, setStaffManagementOpen] = useState(false)
   const [attendanceOpen, setAttendanceOpen] = useState(false)
+  const [examOpen, setExamOpen] = useState(false)
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -55,6 +57,10 @@ const Sidebar = () => {
     setAttendanceOpen(!attendanceOpen);
   };
 
+  const handleExamClick = () => {
+    setExamOpen(!examOpen);
+  };
+
   useEffect(() => {
     if (!open) {
       setBatchManagementOpen(false);
@@ -63,6 +69,7 @@ const Sidebar = () => {
       setAssetOpen(false);
       setStudyMaterialOpen(false);
       setStaffManagementOpen(false);
+      setExamOpen(false);
     }
   }, [open]);
 
@@ -617,6 +624,70 @@ const Sidebar = () => {
               </ListItem>
 
             </List>
+          </Collapse>
+
+          <ListItem
+            button
+            onClick={handleExamClick}
+            sx={{
+              my: 1.5,
+              borderRadius: '8px',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.6)',
+                backdropFilter: 'blur(10px)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+              },
+            }}
+          >
+            <ListItemIcon>
+              <QuizIcon />
+            </ListItemIcon>
+            {open && <ListItemText primary="Exam Module" />}
+            {open && (examOpen ? <ExpandLess /> : <ExpandMore />)}
+          </ListItem>
+          <Collapse in={examOpen} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem
+                button
+                component={Link}
+                to="/dashboard/exam"
+                sx={{
+                  pl: 4,
+                  backgroundColor: 'white',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                  my: 0.5,
+                  '&:hover': {
+                    backgroundColor: '#f5f5f5',
+                  },
+                }}
+              >
+                <ListItemIcon>
+                  <Add />
+                </ListItemIcon>
+                <ListItemText primary="Create Exam" />
+              </ListItem>
+              <ListItem
+                button
+                component={Link}
+                to="/dashboard/exam-category"
+                sx={{
+                  pl: 4,
+                  backgroundColor: 'white',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                  my: 0.5,
+                  '&:hover': {
+                    backgroundColor: '#f5f5f5',
+                  },
+                }}
+              >
+                <ListItemIcon>
+                  <ListAlt />
+                </ListItemIcon>
+                <ListItemText primary="Add Exam Category" />
+              </ListItem>
+            </List> 
           </Collapse>
 
           <ListItem

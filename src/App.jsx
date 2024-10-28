@@ -27,6 +27,8 @@ import Attendance from './pages/Attendance.jsx';
 import BatchAttendance from './pages/BatchAttendance.jsx';
 import ViewAttendance from './pages/ViewAttendance.jsx';
 import CreateLiscence from './pages/CreateLiscence.jsx';
+import Exam from './pages/Exam.jsx';
+import ExamCategory from './pages/ExamCategory.jsx';
 
 function App() {
   return (
@@ -60,6 +62,8 @@ function App() {
           <Route path="/dashboard/batch-attendance/:batchId" element={<BatchAttendance />} />
           <Route path="/dashboard/view-attendance/:batchId" element={<ViewAttendance />} />
           <Route path="/dashboard/create-liscence" element={<CreateLiscence />} />
+          <Route path="/dashboard/exam" element={<Exam />} />
+          <Route path="/dashboard/exam-category" element={<ExamCategory />} />
         </Route>
       </Routes>
       </Router>
