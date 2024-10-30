@@ -1,5 +1,6 @@
 import React, { useState, useEffect , useRef} from 'react';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import DownloadIcon from '@mui/icons-material/Download';
 import axios from 'axios';
 import {
   Avatar ,
@@ -12,6 +13,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
+  Divider,
   TableRow,
   TablePagination,
   Paper,
@@ -419,6 +421,33 @@ const Staff = () => {
     BATCH, COURSE, start_date, end_date, gender, dob , password
   } = studentData;
 
+
+  const payslipRef = useRef(null);
+  const currentDate = new Date();
+  const monthName = currentDate.toLocaleString('default', { month: 'long' }); // e.g., "October"
+  const year = currentDate.getFullYear(); // e.g., 2024
+
+  const handleDownload = (staffDetails) => {
+    // Set the data in the hidden payslip layout
+    const payslipContent = payslipRef.current;
+    payslipContent.querySelector('.staff-name').innerText = staffDetails.staff_name;
+    payslipContent.querySelector('.staff-id').innerText = staffDetails.staff_unique_ids;
+    payslipContent.querySelector('.mobile').innerText = staffDetails.mobile_no;
+    payslipContent.querySelector('.designation').innerText = staffDetails.designation || 'N/A';
+
+    if(staffDetails.id === '59563e49-c644-4a40-876c-7e63c49f86f5'){
+    // Capture and generate PDF
+    html2canvas(payslipContent).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png', { useCORS: true });
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      pdf.addImage(imgData, 'PNG', 10, 10, 190, 270);
+      pdf.save(`Payslip_${staffDetails.staff_name}.pdf`);
+    });
+  } else {
+    alert("Payslip not found");
+  }
+};
+
   return (
     <Container maxWidth="lg">
       <Box my={4}>
@@ -469,6 +498,7 @@ const Staff = () => {
               <TableCell align='center'>Email</TableCell>
               <TableCell align='center'>Password</TableCell>
               <TableCell align="center">Actions</TableCell>
+              <TableCell align="center">Payslip</TableCell>
             </TableRow>
           </TableHead>
 <TableBody>
@@ -493,6 +523,11 @@ const Staff = () => {
               <VisibilityIcon color="primary" />
             </IconButton>
           </Tooltip>
+          </TableCell>
+          <TableCell align='center'>
+            <IconButton onClick={() => handleDownload(course)}>
+              <DownloadIcon color="primary" />
+            </IconButton>
           </TableCell>
         </TableRow>
       ))
@@ -610,6 +645,77 @@ const Staff = () => {
     </Box>
   </Box>
 </Box>
+
+
+<Box
+  ref={payslipRef}
+  sx={{
+    position: "absolute",
+    left: "-9999px",
+    top: 0,
+    padding: 3,
+    maxWidth: 600,
+    margin: "0 auto",
+    border: "1px solid #e0e0e0",
+    boxShadow: 2,
+  }}
+>
+  {/* Header */}
+  <Box textAlign="center" pb={2}>
+    <Typography variant="h5" color="primary">{user}</Typography>
+    <Typography variant="subtitle1" color="textSecondary">Payslip for {monthName}, {year}</Typography>
+    <Divider sx={{ my: 2 }} />
+  </Box>
+
+  {/* Employee Details */}
+  <Grid container spacing={2} mb={2}>
+    <Grid item xs={6}>
+      <Typography variant="body2"><strong>Employee ID:</strong> <span className="staff-id"></span></Typography>
+      <Typography variant="body2"><strong>Name:</strong> <span className="staff-name"></span></Typography>
+      <Typography variant="body2"><strong>Designation:</strong> <span className="designation"></span></Typography>
+    </Grid>
+    <Grid item xs={6}>
+      <Typography variant="body2"><strong>Mobile:</strong> <span className="mobile"></span></Typography>
+    </Grid>
+  </Grid>
+
+  {/* Salary Breakdown */}
+  <Box bgcolor="#f9f9f9" p={2} borderRadius={1} mb={2}>
+    <Typography variant="subtitle2" color="primary" mb={1}>Salary Breakdown</Typography>
+    <Grid container spacing={1}>
+      <Grid item xs={6}>
+        <Typography variant="body2"><strong>Basic Salary:</strong> 7000</Typography>
+      </Grid>
+      <Grid item xs={6}>
+        <Typography variant="body2"><strong>Days Attended:</strong> 26</Typography>
+      </Grid>
+      <Grid item xs={6}>
+        <Typography variant="body2"><strong>Calculated Salary:</strong> 7000</Typography>
+      </Grid>
+    </Grid>
+  </Box>
+
+  {/* Earnings & Deductions */}
+  <Grid container spacing={2} mb={2}>
+    <Grid item xs={6}>
+      <Typography variant="subtitle2" color="success.main" mb={1}>Earnings</Typography>
+      <Typography variant="body2">0</Typography>
+    </Grid>
+    <Grid item xs={6}>
+      <Typography variant="subtitle2" color="error.main" mb={1}>Deductions</Typography>
+      <Typography variant="body2">0</Typography>
+    </Grid>
+  </Grid>
+
+  <Divider sx={{ my: 2 }} />
+
+  {/* Net Payable */}
+  <Box display="flex" justifyContent="space-between" fontSize="14px" pt={1}>
+    <Typography variant="body2" fontWeight="bold">Net Payable:</Typography>
+    <Typography variant="body2">7000</Typography>
+  </Box>
+</Box>
+
 
 
       <AddStaffModal
