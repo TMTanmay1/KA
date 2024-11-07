@@ -6,9 +6,10 @@ import { ArrowBack, ArrowForward } from '@mui/icons-material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import moment from 'moment';
 
 function SettingsSPage() {
-    const navigate = useNavigate();
+    const navigate = useNavigate(); 
     const id = useParams().id;
     const currentDate = new Date();
     const month = currentDate.toLocaleString('default', { month: 'long' });
@@ -60,6 +61,15 @@ function SettingsSPage() {
       Sat: { punchInTime: '', punchOutTime: '', weekOff: false, holiday: false },
       Sun: { punchInTime: '', punchOutTime: '', weekOff: false, holiday: false },
     },
+    week5: {
+      Mon: { punchInTime: '', punchOutTime: '', weekOff: false, holiday: false },
+      Tue: { punchInTime: '', punchOutTime: '', weekOff: false, holiday: false },
+      Wed: { punchInTime: '', punchOutTime: '', weekOff: false, holiday: false },
+      Thu: { punchInTime: '', punchOutTime: '', weekOff: false, holiday: false },
+      Fri: { punchInTime: '', punchOutTime: '', weekOff: false, holiday: false },
+      Sat: { punchInTime: '', punchOutTime: '', weekOff: false, holiday: false },
+      Sun: { punchInTime: '', punchOutTime: '', weekOff: false, holiday: false },
+    },
     month: month,
     year: year,
   });
@@ -88,27 +98,85 @@ function SettingsSPage() {
   });
 
   const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
-  const weeks = ['week1', 'week2', 'week3', 'week4'];
+  const weeks = ['week1', 'week2', 'week3', 'week4', 'week5'];
 
   // Handler for changing work timings
-  const handleWorkTimingsChange = (day, field, value) => {
+  // const handleWorkTimingsChange = (day, field, value) => {
+  //   setWorkTimings((prev) => ({
+  //     ...prev,
+  //     [weeks[currentWeekIndex]]: {
+  //       ...prev[weeks[currentWeekIndex]],
+  //       [day]: {
+  //         ...prev[weeks[currentWeekIndex]][day],
+  //         [field]: value,
+  //       },
+  //     },
+  //   }));
+  // };
+
+  const handleWorkTimingsChange = (dayDate, field, value) => {
     setWorkTimings((prev) => ({
       ...prev,
       [weeks[currentWeekIndex]]: {
         ...prev[weeks[currentWeekIndex]],
-        [day]: {
-          ...prev[weeks[currentWeekIndex]][day],
+        [dayDate]: {
+          ...prev[weeks[currentWeekIndex]][dayDate],
           [field]: value,
         },
       },
     }));
   };
 
-  const handleNextWeek = () => {
-    if (currentWeekIndex < weeks.length - 1) {
-      setCurrentWeekIndex(currentWeekIndex + 1);
+
+  // const handleNextWeek = () => {
+  //   if (currentWeekIndex < weeks.length - 1) {
+  //     setCurrentWeekIndex(currentWeekIndex + 1);
+  //   }
+  // };
+
+  // const handlePreviousWeek = () => {
+  //   if (currentWeekIndex > 0) {
+  //     setCurrentWeekIndex(currentWeekIndex - 1);
+  //   }
+  // };
+
+  // const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  const today = new Date();
+  const currentMonth = today.getMonth(); // Current month (0 - 11)
+  const currentYear = today.getFullYear();
+  const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+  const startDayOfWeek = firstDayOfMonth.getDay(); // Get the day of the week for the 1st of the month
+  const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  // Generate the dates for the current month
+  const getMonthDays = () => {
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate(); // Total days in the month
+    const weeksInMonth = [];
+    let currentDate = 1;
+
+    // Fill weeks with dates
+    while (currentDate <= daysInMonth) {
+      const week = [];
+      // Add the days of the week (starting from the 1st day of the month)
+      for (let i = 0; i < 7; i++) {
+        if (currentDate <= daysInMonth && (i >= startDayOfWeek || weeksInMonth.length > 0)) {
+          week.push({
+            dayOfWeek: daysOfWeek[i], // Weekday (Mon, Tue, etc.)
+            fullDate: `${currentDate} ${firstDayOfMonth.toLocaleString('default', { month: 'short' })}`, // Date format (1 Nov)
+            date: currentDate, // Actual date
+          });
+          currentDate++;
+        } else {
+          week.push(null); // Empty slot for non-existent days
+        }
+      }
+      weeksInMonth.push(week);
     }
+    return weeksInMonth;
   };
+
+  const monthWeeks = getMonthDays();
 
   const handlePreviousWeek = () => {
     if (currentWeekIndex > 0) {
@@ -116,7 +184,11 @@ function SettingsSPage() {
     }
   };
 
-  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const handleNextWeek = () => {
+    if (currentWeekIndex < monthWeeks.length - 1) {
+      setCurrentWeekIndex(currentWeekIndex + 1);
+    }
+  };
 
 
   const [leaveApplicationPolicy, setLeaveApplicationPolicy] = useState({
@@ -161,43 +233,6 @@ const leaveApplicationPolicyList = Object.entries(leaveApplicationPolicy).map(([
     }
   }
 
-//   const handleSave = async () => {
-//     try {
-//         const response = await fetch(`https://crpch.in/api/ka/staff/settings/?id=${id}`, {
-//             method: 'POST',
-//             mode: 'no-cors',
-//             headers: {
-//                 Authorization: `Token ${Token}`,
-//                 "Content-Type": "application/json",
-//                 'Access-Control-Allow-Origin': '*',
-//                 // Note: 'cors' and 'Access-Control-Allow-Origin' headers are usually handled by the server.
-//             },
-//             body: JSON.stringify({
-//                 base_salary: basePay,
-//                 work_timming: workTimingsList,
-//                 early_leaving: earlyLeavingPolicyList,
-//                 late_coming: lateComingPolicyList,
-//                 over_time: overtimePolicyList,
-//                 leave_application: leaveApplicationPolicyList,
-//             })
-//         });
-
-//         if (response.ok) {
-//             setSnackbarMessage('Settings saved successfully');
-//             setSnackbarSeverity('success');
-//             setSnackbarOpen(true);
-//             navigate('/dashboard/staff-settings');
-//         } else {
-//             throw new Error('Failed to save settings');
-//         }
-//     } catch (error) {
-//         console.error('Error saving settings:', error);
-//         setSnackbarMessage('Failed to save settings');
-//         setSnackbarSeverity('error');
-//         setSnackbarOpen(true);
-//     }
-// };
-
 
   return (
     <Container fluid className="d-flex flex-column align-items-center mt-5 p-4" style={{ maxWidth: '1200px' }}>
@@ -231,7 +266,7 @@ const leaveApplicationPolicyList = Object.entries(leaveApplicationPolicy).map(([
 
 
       {/* Table for Weekdays and Shift Selection */}
-       <div className="table-responsive w-100">
+       {/* <div className="table-responsive w-100">
         <table className="table table-bordered text-center">
           <thead className="thead-light">
             <tr>
@@ -282,11 +317,73 @@ const leaveApplicationPolicyList = Object.entries(leaveApplicationPolicy).map(([
             ))}
           </tbody>
         </table>
-      </div>
+      </div> */}
+<div className="table-responsive w-100 mt-4">
+  <table className="table table-bordered text-center">
+    <thead className="thead-light">
+      <tr>
+        <th>Date</th>
+        <th>Punch In</th>
+        <th>Punch Out</th>
+        <th>Week Off</th>
+        <th>Holiday</th>
+      </tr>
+    </thead>
+    <tbody>
+      {monthWeeks[currentWeekIndex].map((day, dayIndex) => (
+        <tr key={dayIndex}>
+          {day ? (
+            <>
+              <td>
+                {day.fullDate} ({day.dayOfWeek})
+              </td>
+              <td>
+                <TextField
+                  label="Punch In"
+                  type="time"
+                  variant="outlined"
+                  value={workTimings[weeks[currentWeekIndex]]?.[day.dayOfWeek]?.punchInTime || ''}
+                  onChange={(e) => handleWorkTimingsChange(day.dayOfWeek, 'punchInTime', e.target.value)}
+                  style={{ width: '150px' }}
+                />
+              </td>
+              <td>
+                <TextField
+                  label="Punch Out"
+                  type="time"
+                  variant="outlined"
+                  value={workTimings[weeks[currentWeekIndex]]?.[day.dayOfWeek]?.punchOutTime || ''}
+                  onChange={(e) => handleWorkTimingsChange(day.dayOfWeek, 'punchOutTime', e.target.value)}
+                  style={{ width: '150px' }}
+                />
+              </td>
+              <td>
+                <Checkbox
+                  checked={workTimings[weeks[currentWeekIndex]]?.[day.dayOfWeek]?.weekOff || false}
+                  onChange={(e) => handleWorkTimingsChange(day.dayOfWeek, 'weekOff', e.target.checked)}
+                />
+              </td>
+              <td>
+                <Checkbox
+                  checked={workTimings[weeks[currentWeekIndex]]?.[day.dayOfWeek]?.holiday || false}
+                  onChange={(e) => handleWorkTimingsChange(day.dayOfWeek, 'holiday', e.target.checked)}
+                />
+              </td>
+            </>
+          ) : (
+            <td colSpan="5" className="text-center">-</td> // Empty slot for non-existent days
+          )}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+    
 
       {/* Navigation Buttons */}
       <div className="d-flex justify-content-between w-100 mt-4">
-        <Button 
+        {/* <Button 
           variant="outlined" 
           onClick={handlePreviousWeek} 
           disabled={currentWeekIndex === 0}
@@ -298,6 +395,23 @@ const leaveApplicationPolicyList = Object.entries(leaveApplicationPolicy).map(([
           variant="outlined" 
           onClick={handleNextWeek} 
           disabled={currentWeekIndex === weeks.length - 1}
+          endIcon={<ArrowForward />}
+        >
+          Next
+        </Button> */}
+
+<Button 
+          variant="outlined" 
+          onClick={handlePreviousWeek} 
+          disabled={currentWeekIndex === 0}
+          startIcon={<ArrowBack />}
+        >
+          Previous
+        </Button>
+        <Button 
+          variant="outlined" 
+          onClick={handleNextWeek} 
+          disabled={currentWeekIndex === monthWeeks.length -1}
           endIcon={<ArrowForward />}
         >
           Next
